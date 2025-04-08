@@ -35,7 +35,6 @@ class RegisterFragment: BaseLaunchFragment() {
                 ViewObject(registerTopRightCloud, "rc1"),
                 ViewObject(registerBottomRightCloud, "rc2"),
                 ViewObject(registerNewAccountText),
-                ViewObject(registerSignUpText),
                 ViewObject(registerUsernameTitle),
                 ViewObject(registerUsernameInput),
                 ViewObject(registerPasswordTitle),
