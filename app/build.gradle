@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace 'by.ssrlab.birdvoice'
+    namespace "by.dis.birdvoice"
     compileSdk 34
 
     defaultConfig {
         viewBinding.enabled = true
 
-        applicationId "by.ssrlab.birdvoice"
+        applicationId "by.dis.birdvoice"
         minSdk 29
         targetSdk 34
         versionCode 3
