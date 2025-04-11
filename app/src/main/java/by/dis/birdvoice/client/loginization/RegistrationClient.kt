@@ -23,7 +23,7 @@ object RegistrationClient {
         val mediaType = "application/json".toMediaType()
         val body = "{\"username\":\"$nickname\",\"password\":\"$password\",\"first_name\":\"null\",\"last_name\":\"null\",\"email\":\"$email\"}".toRequestBody(mediaType)
         val request = Request.Builder()
-            .url("https://bird-sounds-database.ssrlab.by/api/user-create/")
+            .url("https://bird-sounds-database.intelligent.by/api/user-create/")
             .post(body)
             .addHeader("Content-Type", "application/json")
             .build()

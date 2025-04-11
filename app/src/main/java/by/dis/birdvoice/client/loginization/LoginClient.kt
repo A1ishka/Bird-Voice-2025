@@ -24,7 +24,7 @@ object LoginClient {
         val mediaType = "application/json".toMediaType()
         val body = "{\"username\":\"$nickname\",\"password\":\"$password\"}".toRequestBody(mediaType)
         val request = Request.Builder()
-            .url("https://bird-sounds-database.ssrlab.by/api/login-api/")
+            .url("https://bird-sounds-database.intelligent.by/api/login-api/")
             .post(body)
             .addHeader("Content-Type", "application/json")
             .build()

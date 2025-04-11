@@ -36,7 +36,7 @@ object RecognitionClient {
             .build()
 
         val request = Request.Builder()
-            .url("https://bird-sounds-database.ssrlab.by/api/recognize/")
+            .url("https://bird-sounds-database.intelligent.by/api/recognize/")
             .post(body)
             .addHeader("Cookie", "csrftoken=GnJmqyQOhvOhzOQ39Dczs8EorOUWAUr3A1UyxuZ6LVFOWFWwshjVEmyGbCEEfK0o")
             .build()

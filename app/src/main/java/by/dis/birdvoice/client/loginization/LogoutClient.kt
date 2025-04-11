@@ -24,7 +24,7 @@ class LogoutClient {
 //            .build()
 
         val request = Request.Builder()
-            .url("https://bird-sounds-database.ssrlab.by/api/logout/")
+            .url("https://bird-sounds-database.intelligent.by/api/logout/")
             .post(body)
             .build()
 
@@ -55,7 +55,7 @@ class LogoutClient {
         val body = "{\"id\":\"$accountId\",\"refresh\":\"$refreshToken\"}".toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url("https://bird-sounds-database.ssrlab.by/api/delete-user/")
+            .url("https://bird-sounds-database.intelligent.by/api/delete-user/")
             .post(body)
             .addHeader("Content-Type", "application/json")
             .build()
