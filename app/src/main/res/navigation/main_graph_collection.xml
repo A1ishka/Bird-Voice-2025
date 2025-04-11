@@ -6,10 +6,10 @@
 
     <fragment
         android:id="@+id/collectionFragment"
-        android:name="by.ssrlab.birdvoice.main.fragments.collection.CollectionFragment"
+        android:name="by.dis.birdvoice.main.fragments.collection.CollectionFragment"
         android:label="CollectionFragment" />
     <fragment
         android:id="@+id/feedbackFragment"
-        android:name="by.ssrlab.birdvoice.main.fragments.FeedbackFragment"
+        android:name="by.dis.birdvoice.main.fragments.FeedbackFragment"
         android:label="FeedbackFragment" />
 </navigation>
