@@ -116,7 +116,7 @@ class Recognition1Fragment: BaseMainFragment() {
                 it.close()
             }
 
-            RecognitionClient.sendToDatabase(file, mainVM.getAccessToken(), activityMain.getUsername(), activityMain.getApp().getLocaleInt(), { list ->
+            RecognitionClient.sendToDatabase(file, activityMain.getUsername(), activityMain.getApp().getLocaleInt(), { list ->
                 mainVM.setList(list)
                 file.delete()
                 navigateAction()
@@ -126,7 +126,7 @@ class Recognition1Fragment: BaseMainFragment() {
                 navigateAction()
             })
         } else {
-            mainVM.getAudioFile()?.let { RecognitionClient.sendToDatabase(it, mainVM.getAccessToken(), activityMain.getUsername(), activityMain.getApp().getLocaleInt(), { list ->
+            mainVM.getAudioFile()?.let { RecognitionClient.sendToDatabase(it, activityMain.getUsername(), activityMain.getApp().getLocaleInt(), { list ->
                 mainVM.setList(list)
                 navigateAction()
             }) { string ->

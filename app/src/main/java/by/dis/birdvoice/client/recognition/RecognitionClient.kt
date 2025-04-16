@@ -25,20 +25,20 @@ object RecognitionClient {
         .writeTimeout(3, TimeUnit.MINUTES)
         .build()
 
-    fun sendToDatabase(audioFile: File, token: String, username: String, language: Int, onSuccess: (ArrayList<RecognizedBird>) -> Unit, onFailure: (String) -> Unit) {
+    fun sendToDatabase(audioFile: File, username: String, language: Int, onSuccess: (ArrayList<RecognizedBird>) -> Unit, onFailure: (String) -> Unit) {
+
+        val audioType = audioFile.extension
 
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("audio_to_recognize", "$username audio", audioFile.asRequestBody("application/octet-stream".toMediaType()))
-            .addFormDataPart("access",token)
-            .addFormDataPart("username",username)
+            .addFormDataPart("audio_to_recognize", "$username audio.$audioType", audioFile.asRequestBody("audio/mpeg".toMediaType()))
+            .addFormDataPart("username", username)
             .addFormDataPart("language", language.toString())
             .build()
 
         val request = Request.Builder()
             .url("https://bird-sounds-database.intelligent.by/api/recognize/")
             .post(body)
-            .addHeader("Cookie", "csrftoken=GnJmqyQOhvOhzOQ39Dczs8EorOUWAUr3A1UyxuZ6LVFOWFWwshjVEmyGbCEEfK0o")
             .build()
 
         recognitionClient.newCall(request).enqueue(object : Callback {
@@ -50,7 +50,6 @@ object RecognitionClient {
                 val responseBody = response.body?.string()
                 val midString = responseBody?.substring(1, responseBody.length - 1)
                 val finalString = (midString?.let { decodeUnicode(it) })?.replace("\\", "")
-
                 try {
                     val jObject = finalString?.let { JSONObject(it) }
                     val keys = jObject?.keys()
