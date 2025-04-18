@@ -1,38 +1,42 @@
 package by.dis.birdvoice.helpers.utils
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import by.dis.birdvoice.helpers.dataStore
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
-class LoginManager(context: Context) {
+class LoginManager(private val context: Context) {
 
     companion object {
-        private const val LOGIN = "login"
-        private const val PASSWORD = "password"
-        private const val PREFS_NAME = "login_prefs"
+        private val LOGIN = stringPreferencesKey("login")
+        private val PASSWORD = stringPreferencesKey("password")
     }
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-    fun saveTokens(login: String, password: String) {
-        val editor = sharedPreferences.edit()
-        editor.putString(LOGIN, login)
-        editor.putString(PASSWORD, password)
-        editor.apply()
+    fun saveTokens(login: String, password: String) = runBlocking {
+        context.dataStore.edit { prefs ->
+            prefs[LOGIN] = login
+            prefs[PASSWORD] = password
+        }
     }
 
-    fun getTokens(onSuccess: (String, String) -> Unit) {
-        val login = sharedPreferences.getString(LOGIN, "") ?: ""
-        val password = sharedPreferences.getString(PASSWORD, "") ?: ""
+    fun getTokens(onSuccess: (String, String) -> Unit) = runBlocking {
+        val login = context.dataStore
+            .data.map{ it[LOGIN] ?: "" }
+            .first()
+        val password = context.dataStore
+            .data.map { it[PASSWORD] ?: "" }
+            .first()
 
         onSuccess(login, password)
     }
 
-    fun removeTokens() {
-        val editor = sharedPreferences.edit()
-        editor.apply {
-            remove(LOGIN)
-            remove(PASSWORD)
-            apply()
+    fun removeTokens() = runBlocking {
+        context.dataStore.edit {
+            it.remove(LOGIN)
+            it.remove(PASSWORD)
         }
     }
 }

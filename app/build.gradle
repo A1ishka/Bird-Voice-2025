@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.airbnb.android:lottie:3.4.0"
 
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
+
     def lifecycle_version = "2.7.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
