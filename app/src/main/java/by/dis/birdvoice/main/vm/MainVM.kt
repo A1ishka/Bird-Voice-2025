@@ -7,16 +7,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import by.dis.birdvoice.R
 import by.dis.birdvoice.client.loginization.LogoutClient
 import by.dis.birdvoice.databinding.ActivityMainBinding
 import by.dis.birdvoice.databinding.DialogLanguageBinding
 import by.dis.birdvoice.db.objects.RecognizedBird
+import by.dis.birdvoice.helpers.dataStore
 import by.dis.birdvoice.helpers.utils.DialogCommonInitiator
 import by.dis.birdvoice.launch.LaunchActivity
 import by.dis.birdvoice.main.MainActivity
@@ -27,15 +30,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
-class MainVM: ViewModel() {
+class MainVM : ViewModel() {
 
     //Activity elements
     var activityBinding: ActivityMainBinding? = null
     private val toolbarTitle = MutableLiveData<String>()
-    fun setToolbarTitle(title: String){
+    fun setToolbarTitle(title: String) {
         toolbarTitle.value = title
     }
-    fun setToolbarTitleObserver(toolbar: androidx.appcompat.widget.Toolbar, activity: MainActivity){
+
+    fun setToolbarTitleObserver(
+        toolbar: androidx.appcompat.widget.Toolbar,
+        activity: MainActivity
+    ) {
         toolbarTitle.observe(activity) {
             toolbar.title = it
         }
@@ -49,15 +56,43 @@ class MainVM: ViewModel() {
                     dialog.setContentView(dialogBinding.root)
 
                     dialogBinding.apply {
-                        dialogLangButtonBy.setOnClickListener { initDrawerLanguageDialogAction("be", activity, dialog) }
-                        dialogLangButtonEn.setOnClickListener { initDrawerLanguageDialogAction("en", activity, dialog) }
-                        dialogLangButtonRu.setOnClickListener { initDrawerLanguageDialogAction("ru", activity, dialog) }
+                        dialogLangButtonBy.setOnClickListener {
+                            initDrawerLanguageDialogAction(
+                                "be",
+                                activity,
+                                dialog
+                            )
+                        }
+                        dialogLangButtonEn.setOnClickListener {
+                            initDrawerLanguageDialogAction(
+                                "en",
+                                activity,
+                                dialog
+                            )
+                        }
+                        dialogLangButtonRu.setOnClickListener {
+                            initDrawerLanguageDialogAction(
+                                "ru",
+                                activity,
+                                dialog
+                            )
+                        }
                     }
                 }
             }
 
-            drawerButtonInstruction.setOnClickListener { initDrawerButtonAction(R.id.informPageFragment, activity) }
-            drawerButtonFeedback.setOnClickListener { initDrawerButtonAction(R.id.feedbackFragment, activity) }
+            drawerButtonInstruction.setOnClickListener {
+                initDrawerButtonAction(
+                    R.id.informPageFragment,
+                    activity
+                )
+            }
+            drawerButtonFeedback.setOnClickListener {
+                initDrawerButtonAction(
+                    R.id.feedbackFragment,
+                    activity
+                )
+            }
             drawerButtonLogOut.setOnClickListener {
                 val dialogLogOutLanguageArray = arrayListOf(
                     ContextCompat.getString(activity, R.string.sign_out),
@@ -110,7 +145,12 @@ class MainVM: ViewModel() {
         activity.hideBottomNav()
         activity.closeDrawer()
     }
-    private fun initDrawerLanguageDialogAction(language: String, activity: MainActivity, dialog: Dialog) {
+
+    private fun initDrawerLanguageDialogAction(
+        language: String,
+        activity: MainActivity,
+        dialog: Dialog
+    ) {
         dialog.dismiss()
         activity.closeDrawer()
         savePreferences(language, activity)
@@ -124,13 +164,13 @@ class MainVM: ViewModel() {
     }
 
     private fun savePreferences(locale: String, activity: MainActivity) {
-        val sharedPreferences = activity.getSharedPreferences(activity.getApp().constPreferences, AppCompatActivity.MODE_PRIVATE) ?: return
-        with (sharedPreferences.edit()) {
-            putString(activity.getApp().constLocale, locale)
-            apply()
-        }
+        activity.lifecycleScope.launch {
+            activity.dataStore.edit {
+                it[stringPreferencesKey(activity.getApp().constLocale)] = locale
+            }
 
-        activity.recreate()
+            activity.recreate()
+        }
     }
 
     //Fragment elements
@@ -139,19 +179,24 @@ class MainVM: ViewModel() {
 
     //NavController set
     private lateinit var navController: NavController
-    fun setNavController(controller: NavController) { navController = controller }
+    fun setNavController(controller: NavController) {
+        navController = controller
+    }
+
     fun navigateToWithDelay(address: Int) {
         scope.launch {
             delay(600)
             navController.navigate(address)
         }
     }
+
     fun navigateToWithDelay(address: Int, bundle: Bundle) {
         scope.launch {
             delay(600)
             navController.navigate(address, bundle)
         }
     }
+
     fun navigateUpWithDelay() {
         scope.launch {
             delay(600)
@@ -169,26 +214,31 @@ class MainVM: ViewModel() {
     fun getScope() = scope
 
     //OnBackPressedCallback
-    val onMapBackPressedCallback = object : OnBackPressedCallback(true){
+    val onMapBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             navUpAnimLambda()
             navigateUpWithDelay()
         }
     }
     private var navUpAnimLambda = {}
-    fun setNavUpLambda(anim: () -> Unit){
+    fun setNavUpLambda(anim: () -> Unit) {
         navUpAnimLambda = anim
     }
 
     //AudioRecord
     private var tempAudioFile: File? = null
     fun getAudioFile() = tempAudioFile
-    fun setAudioFile(file: File) { tempAudioFile = file }
+    fun setAudioFile(file: File) {
+        tempAudioFile = file
+    }
 
     //AudioPick
     val observableFileToken = MutableLiveData<Boolean>()
     private var uri: Uri? = null
-    fun setUri(uri: Uri? = null) { this.uri = uri }
+    fun setUri(uri: Uri? = null) {
+        this.uri = uri
+    }
+
     fun getUri() = uri
 
     //Token
@@ -211,7 +261,10 @@ class MainVM: ViewModel() {
             list
         } else listOfResults
     }
-    fun setList(list: ArrayList<RecognizedBird>) { listOfResults = list }
+
+    fun setList(list: ArrayList<RecognizedBird>) {
+        listOfResults = list
+    }
 
     val isCollectionEmptyInt = MutableLiveData<Int>()
 

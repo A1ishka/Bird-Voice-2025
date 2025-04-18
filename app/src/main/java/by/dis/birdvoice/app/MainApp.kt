@@ -2,29 +2,32 @@ package by.dis.birdvoice.app
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Configuration
+import by.dis.birdvoice.helpers.LOCALE_CODE_KEY
+import by.dis.birdvoice.helpers.dataStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class MainApp : Application() {
 
-    val constPreferences = "preferences"
     val constLocale = "locale"
     val constLaunches = "launches"
 
-    private var locale = Locale("en")
-    private val config = Configuration()
     private var localeInt = 0
+    val localeFlow = MutableStateFlow<Locale>(Locale.getDefault())
 
     override fun onCreate() {
         super.onCreate()
-
-        Locale.setDefault(locale)
-    }
-
-    fun setLocale(loc: Locale){
-        locale = loc
-        config.setLocale(loc)
-        context.resources.configuration.setLocale(loc)
+        CoroutineScope(Dispatchers.IO).launch {
+            dataStore.data.map { prefs ->
+                Locale(prefs[LOCALE_CODE_KEY] ?: "en")
+            }.collect {
+                localeFlow.value = it
+            }
+        }
     }
 
     fun setLocaleInt(locale: String) {
