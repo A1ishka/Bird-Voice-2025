@@ -60,7 +60,6 @@
                 android:layout_marginTop="6dp"
                 android:paddingHorizontal="8dp"
 
-                android:text="@string/sign_up_to_continue"
                 android:textSize="15sp"
                 android:textColor="@color/primary_blue"
                 android:fontFamily="@font/roboto"
