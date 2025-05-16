@@ -19,10 +19,8 @@ object LoginClient {
 
         if (loginClient == null) loginClient = OkHttpClient.Builder().build()
 
-        val nickname = email.substringBefore("@")
-
         val mediaType = "application/json".toMediaType()
-        val body = "{\"username\":\"$nickname\",\"password\":\"$password\"}".toRequestBody(mediaType)
+        val body = "{\"email\":\"$email\",\"password\":\"$password\"}".toRequestBody(mediaType)
         val request = Request.Builder()
             .url("https://bird-sounds-database.intelligent.by/api/login-api/")
             .post(body)
@@ -40,11 +38,11 @@ object LoginClient {
 
                     try {
                         val jObject = responseBody?.let { it1 -> JSONObject(it1) }
-                        if (jObject?.getString("message") == "Login successfull")
+                        if (jObject?.getString("message") == "Login successful")
                             onSuccess(
                                 jObject.getJSONObject("token").getString("access"),
                                 jObject.getJSONObject("token").getString("refresh"),
-                                nickname,
+                                email,
                                 jObject.getJSONObject("user").getJSONArray("account").getJSONObject(0).getInt("id")
                         )
 

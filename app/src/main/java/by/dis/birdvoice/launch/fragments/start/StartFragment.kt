@@ -41,8 +41,8 @@ class StartFragment: BaseLaunchFragment() {
                     activityLaunch.apply {
                         getLoginManager().getTokens { login, password ->
                             if (login.isNotEmpty() && password.isNotEmpty()) {
-                                LoginClient.post(login, password, { access, refresh, username, id ->
-                                    moveToMainActivity(recognitionToken = access, refreshToken = refresh, username = username, accountId = id)
+                                LoginClient.post(login, password, { access, refresh, email, id ->
+                                    moveToMainActivity(recognitionToken = access, refreshToken = refresh, email = email, accountId = id)
                                 }, {
                                     activityLaunch.runOnUiThread {
                                         launchVM.navigate(R.id.action_logoFragment_to_choiceFragment)

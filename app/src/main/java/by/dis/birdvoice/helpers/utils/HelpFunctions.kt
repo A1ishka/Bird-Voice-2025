@@ -139,8 +139,8 @@ class HelpFunctions(private val mainApp: MainApp) {
             if (binding is FragmentLoginBinding) {
                 activity.runOnUiThread {
                     setErrorView(
-                        binding.loginUsernameInput,
-                        binding.loginUsernameErrorMessage,
+                        binding.loginEmailInput,
+                        binding.loginEmailErrorMessage,
                         errorMessage,
                         activity
                     )
@@ -162,18 +162,18 @@ class HelpFunctions(private val mainApp: MainApp) {
                                 activity
                             )
 
-                        "Username already in use" ->
+                        "Email already in use" ->
                             setErrorView(
-                                binding.registerUsernameInput,
-                                binding.registerUsernameErrorMessage,
+                                binding.registerEmailInput,
+                                binding.registerEmailErrorMessage,
                                 errorMessage,
                                 activity
                             )
 
                         else -> {
                             setErrorView(
-                                binding.registerUsernameInput,
-                                binding.registerUsernameErrorMessage,
+                                binding.registerEmailInput,
+                                binding.registerEmailErrorMessage,
                                 errorMessage,
                                 activity
                             )
@@ -192,15 +192,15 @@ class HelpFunctions(private val mainApp: MainApp) {
             if (!emailRegex.matches(checkableView.text!!)) {
                 if (binding is FragmentLoginBinding)
                     setErrorView(
-                        binding.loginUsernameInput,
-                        binding.loginUsernameErrorMessage,
+                        binding.loginEmailInput,
+                        binding.loginEmailErrorMessage,
                         ContextCompat.getString(activity, R.string.email_error_valid),
                         activity
                     )
                 else if (binding is FragmentRegisterBinding)
                     setErrorView(
-                        binding.registerUsernameInput,
-                        binding.registerUsernameErrorMessage,
+                        binding.registerEmailInput,
+                        binding.registerEmailErrorMessage,
                         ContextCompat.getString(activity, R.string.email_error_valid),
                         activity
                     )

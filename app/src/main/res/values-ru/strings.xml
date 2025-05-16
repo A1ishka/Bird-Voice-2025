@@ -34,7 +34,6 @@
     <!--  Additional  -->
     <string name="by_continuing_you_agree_to_our_privacy_policy">Продолжая, вы соглашаетесь с нашей <a href="http://google.com">политикой конфиденциальности</a>.</string>
     <string name="additional_information">Дополнительная информация</string>
-    <string name="username">Никнейм</string>
     <string name="first_name">Имя</string>
     <string name="last_name">Фамилия</string>
     <string name="model_isnt_loaded">Языковая модель ещё загружена</string>

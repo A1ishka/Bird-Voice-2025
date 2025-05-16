@@ -48,7 +48,7 @@ class MainActivity : BaseActivity() {
     private var regValue = 0
     private var recognitionToken = ""
     private var refreshToken = ""
-    private var username = ""
+    private var email = ""
     private var accountId = 0
 
     private val mainApp = MainApp()
@@ -87,7 +87,7 @@ class MainActivity : BaseActivity() {
         regValue = intent.getIntExtra("userRegisterToken", 1)
         recognitionToken = intent.getStringExtra("access").toString()
         refreshToken = intent.getStringExtra("refresh").toString()
-        username = intent.getStringExtra("username").toString()
+        email = intent.getStringExtra("email").toString()
         accountId = intent.getIntExtra("accountId", 0)
 
         mainVM.setTokens(recognitionToken, refreshToken, accountId)
@@ -277,5 +277,5 @@ class MainActivity : BaseActivity() {
     fun getApp() = mainApp
     fun getCollectionDao() = collectionDao
     fun getLoginManager() = loginManager
-    fun getUsername() = username
+    fun getEmail() = email
 }

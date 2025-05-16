@@ -30,8 +30,8 @@ class LoginFragment: BaseLaunchFragment() {
                 ViewObject(loginBottomRightCloud, "rc2"),
                 ViewObject(loginTopRightCloud, "rc1"),
                 ViewObject(loginBird),
-                ViewObject(loginUsernameTitle),
-                ViewObject(loginUsernameInput),
+                ViewObject(loginEmailTitle),
+                ViewObject(loginEmailInput),
                 ViewObject(loginPasswordTitle),
                 ViewObject(loginPasswordInput),
                 ViewObject(loginShowPasswordButton),
@@ -43,7 +43,7 @@ class LoginFragment: BaseLaunchFragment() {
         animationUtils.commonDefineObjectsVisibility(arrayOfViews)
         animationUtils.commonObjectAppear(activityLaunch.getApp().getContext(), arrayOfViews, true)
 
-        binding.loginUsernameInput.filters = helpFunctions.getLoginFilters()
+        binding.loginEmailInput.filters = helpFunctions.getLoginFilters()
         binding.loginPasswordInput.filters = helpFunctions.getPasswordFilters()
 
         if (launchVM.boolPopBack) launchVM.showTop()
@@ -58,14 +58,14 @@ class LoginFragment: BaseLaunchFragment() {
 
             binding.loginSignInButton.setOnClickListener {
                 checkLogin {
-                    val login = binding.loginUsernameInput.text.toString()
+                    val login = binding.loginEmailInput.text.toString()
                     val password = binding.loginPasswordInput.text.toString()
-                    LoginClient.post(login, password, { access, refresh, username, id ->
+                    LoginClient.post(login, password, { access, refresh, email, id ->
                         if (binding.loginRememberMe.isChecked) activityLaunch.getLoginManager().saveTokens(login, password)
                         activityLaunch.runOnUiThread {
-                            activityLaunch.moveToMainActivity(recognitionToken = access, refreshToken = refresh, username = username, accountId = id)
+                            activityLaunch.moveToMainActivity(recognitionToken = access, refreshToken = refresh, email = email, accountId = id)
                         }
-                    }, { helpFunctions.checkLoginInput(binding.loginUsernameInput, binding.loginUsernameErrorMessage, it, activityLaunch, binding) })
+                    }, { helpFunctions.checkLoginInput(binding.loginEmailInput, binding.loginEmailErrorMessage, it, activityLaunch, binding) })
                 }
             }
         })
@@ -95,21 +95,21 @@ class LoginFragment: BaseLaunchFragment() {
 
         setEditTextListeners()
 
-        errorValue += helpFunctions.checkLoginInput(binding.loginUsernameInput, binding.loginUsernameErrorMessage, activity = activityLaunch, binding = binding)
+        errorValue += helpFunctions.checkLoginInput(binding.loginEmailInput, binding.loginEmailErrorMessage, activity = activityLaunch, binding = binding)
         errorValue += helpFunctions.checkPasswordInput(binding.loginPasswordInput, binding.loginPasswordErrorMessage, resources, activityLaunch)
 
         if (errorValue == 0) onSuccess()
     }
 
     private fun errorViewOut(checkLogin: Boolean = false, checkPassword: Boolean = false){
-        if (checkLogin) helpFunctions.checkErrorViewAvailability(binding.loginUsernameErrorMessage)
+        if (checkLogin) helpFunctions.checkErrorViewAvailability(binding.loginEmailErrorMessage)
         if (checkPassword) helpFunctions.checkErrorViewAvailability(binding.loginPasswordErrorMessage)
     }
 
     private fun setEditTextListeners(){
-        binding.loginUsernameInput.addTextChangedListener(helpFunctions.createEditTextListener ({
+        binding.loginEmailInput.addTextChangedListener(helpFunctions.createEditTextListener ({
             errorViewOut(checkLogin = true)
-            binding.loginUsernameInput.setTextColor(ContextCompat.getColor(activityLaunch, R.color.primary_blue)) }, {}))
+            binding.loginEmailInput.setTextColor(ContextCompat.getColor(activityLaunch, R.color.primary_blue)) }, {}))
         binding.loginPasswordInput.addTextChangedListener(helpFunctions.createEditTextListener ({
             errorViewOut(checkPassword = true)
             binding.loginPasswordInput.setTextColor(ContextCompat.getColor(activityLaunch, R.color.primary_blue)) }, {}))

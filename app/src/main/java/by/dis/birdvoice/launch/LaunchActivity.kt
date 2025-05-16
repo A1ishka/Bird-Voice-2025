@@ -61,7 +61,7 @@ class LaunchActivity : BaseActivity() {
         regOrLogToken: Int = 0,
         recognitionToken: String,
         refreshToken: String,
-        username: String,
+        email: String,
         accountId: Int
     ) {
         val intent = Intent(this, MainActivity::class.java)
@@ -70,7 +70,7 @@ class LaunchActivity : BaseActivity() {
         intent.putExtra("userRegisterToken", regOrLogToken)
         intent.putExtra("access", recognitionToken)
         intent.putExtra("refresh", refreshToken)
-        intent.putExtra("username", username)
+        intent.putExtra("email", email)
         intent.putExtra("accountId", accountId)
         startActivity(intent)
     }

@@ -25,13 +25,24 @@ object RecognitionClient {
         .writeTimeout(3, TimeUnit.MINUTES)
         .build()
 
-    fun sendToDatabase(audioFile: File, username: String, language: Int, onSuccess: (ArrayList<RecognizedBird>) -> Unit, onFailure: (String) -> Unit) {
+    fun sendToDatabase(
+        audioFile: File,
+        email: String,
+        language: Int,
+        onSuccess: (ArrayList<RecognizedBird>) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        val username = email.substringBefore("@")
 
         val audioType = audioFile.extension
 
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("audio_to_recognize", "$username audio.$audioType", audioFile.asRequestBody("audio/mpeg".toMediaType()))
+            .addFormDataPart(
+                "audio_to_recognize",
+                "$username audio.$audioType",
+                audioFile.asRequestBody("audio/mpeg".toMediaType())
+            )
             .addFormDataPart("username", username)
             .addFormDataPart("language", language.toString())
             .build()

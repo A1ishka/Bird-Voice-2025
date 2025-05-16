@@ -53,23 +53,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/register_sign_up_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="6dp"
-                android:paddingHorizontal="8dp"
-
-                android:textSize="15sp"
-                android:textColor="@color/primary_blue"
-                android:fontFamily="@font/roboto"
-
-                app:layout_constraintStart_toStartOf="@id/register_new_account_text"
-                app:layout_constraintEnd_toEndOf="@id/register_new_account_text"
-                app:layout_constraintTop_toBottomOf="@id/register_new_account_text"/>
-
-            <TextView
-                android:id="@+id/register_username_title"
+                android:id="@+id/register_email_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -83,10 +67,10 @@
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_sign_up_text"/>
+                app:layout_constraintTop_toBottomOf="@id/register_new_account_text"/>
 
             <TextView
-                android:id="@+id/register_username_error_message"
+                android:id="@+id/register_email_error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -99,11 +83,11 @@
                 android:layout_marginTop="4dp"
                 android:elevation="6dp"
 
-                app:layout_constraintStart_toStartOf="@id/register_username_input"
-                app:layout_constraintTop_toBottomOf="@id/register_username_input"/>
+                app:layout_constraintStart_toStartOf="@id/register_email_input"
+                app:layout_constraintTop_toBottomOf="@id/register_email_input"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/register_username_input"
+                android:id="@+id/register_email_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
@@ -122,9 +106,9 @@
                 android:maxLength="28"
                 android:inputType="text"
 
-                app:layout_constraintStart_toStartOf="@id/register_username_title"
-                app:layout_constraintEnd_toEndOf="@id/register_username_title"
-                app:layout_constraintTop_toBottomOf="@id/register_username_title"/>
+                app:layout_constraintStart_toStartOf="@id/register_email_title"
+                app:layout_constraintEnd_toEndOf="@id/register_email_title"
+                app:layout_constraintTop_toBottomOf="@id/register_email_title"/>
 
             <TextView
                 android:id="@+id/register_password_title"
@@ -141,7 +125,7 @@
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_username_input"/>
+                app:layout_constraintTop_toBottomOf="@id/register_email_input"/>
 
             <TextView
                 android:id="@+id/register_password_error_message"

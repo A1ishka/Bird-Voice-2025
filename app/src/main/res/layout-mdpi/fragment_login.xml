@@ -81,23 +81,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/login_sign_in_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="6dp"
-            android:paddingHorizontal="8dp"
-
-            android:textSize="14sp"
-            android:textColor="@color/primary_blue"
-            android:fontFamily="@font/roboto"
-
-            app:layout_constraintStart_toStartOf="@id/login_welcome_text"
-            app:layout_constraintEnd_toEndOf="@id/login_welcome_text"
-            app:layout_constraintTop_toBottomOf="@id/login_welcome_text"/>
-
-        <TextView
-            android:id="@+id/login_username_title"
+            android:id="@+id/login_email_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -113,7 +97,7 @@
             app:layout_constraintTop_toBottomOf="@id/login_bird"/>
 
         <TextView
-            android:id="@+id/login_username_error_message"
+            android:id="@+id/login_email_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -126,11 +110,11 @@
             android:textSize="11sp"
             android:visibility="invisible"
 
-            app:layout_constraintStart_toStartOf="@id/login_username_input"
-            app:layout_constraintTop_toBottomOf="@id/login_username_input" />
+            app:layout_constraintStart_toStartOf="@id/login_email_input"
+            app:layout_constraintTop_toBottomOf="@id/login_email_input" />
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/login_username_input"
+            android:id="@+id/login_email_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
@@ -149,9 +133,9 @@
             android:maxLength="28"
             android:inputType="text"
 
-            app:layout_constraintStart_toStartOf="@id/login_username_title"
-            app:layout_constraintEnd_toEndOf="@id/login_username_title"
-            app:layout_constraintTop_toBottomOf="@id/login_username_title"/>
+            app:layout_constraintStart_toStartOf="@id/login_email_title"
+            app:layout_constraintEnd_toEndOf="@id/login_email_title"
+            app:layout_constraintTop_toBottomOf="@id/login_email_title"/>
 
         <TextView
             android:id="@+id/login_password_title"
@@ -168,7 +152,7 @@
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_username_input"/>
+            app:layout_constraintTop_toBottomOf="@id/login_email_input"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/login_password_input"
