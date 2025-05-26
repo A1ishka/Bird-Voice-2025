@@ -14,7 +14,6 @@ import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import java.util.regex.Pattern
 
 object RecognitionClient {
 
@@ -28,6 +27,7 @@ object RecognitionClient {
     fun sendToDatabase(
         audioFile: File,
         email: String,
+        token: String,
         language: Int,
         onSuccess: (ArrayList<RecognizedBird>) -> Unit,
         onFailure: (String) -> Unit
@@ -39,16 +39,15 @@ object RecognitionClient {
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
-                "audio_to_recognize",
+                "audio_file",
                 "$username audio.$audioType",
                 audioFile.asRequestBody("audio/mpeg".toMediaType())
             )
-            .addFormDataPart("username", username)
-            .addFormDataPart("language", language.toString())
             .build()
 
         val request = Request.Builder()
-            .url("https://bird-sounds-database.intelligent.by/api/recognize/")
+            .url("https://apiptushki.intelligent.by/predict2")
+            .addHeader("Authorization", "Bearer $token")
             .post(body)
             .build()
 
@@ -59,24 +58,33 @@ object RecognitionClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body?.string()
-                val midString = responseBody?.substring(1, responseBody.length - 1)
-                val finalString = (midString?.let { decodeUnicode(it) })?.replace("\\", "")
+
                 try {
-                    val jObject = finalString?.let { JSONObject(it) }
-                    val keys = jObject?.keys()
+                    val jObject = responseBody?.let { JSONObject(it) }
+                    val predictions = jObject?.getJSONObject("predictions")
 
                     val arrayOfResults = arrayListOf<RecognizedBird>()
+                    val keys = predictions?.keys()
+
                     while (keys?.hasNext() == true) {
                         val key = keys.next()
-                        val birdInfoArray = jObject.getString(key)
+                        val birdInfoArray = predictions.getJSONArray(key)
 
-                        val recognizedBird = RecognizedBird(
-                            image = birdInfoArray,
-                            name = key
-                        )
+                        val commonNamesArray = birdInfoArray.getJSONArray(0)
+                        val name = if (language in 0 until commonNamesArray.length())
+                            commonNamesArray.getString(language).trim()
+                        else
+                            key
 
-                        if (recognizedBird.name != "unknown" && recognizedBird.name != "background")
+                        val imageUrl = birdInfoArray.getString(1)
+
+                        if (name.lowercase() != "unknown" && name.lowercase() != "background") {
+                            val recognizedBird = RecognizedBird(
+                                name = name,
+                                image = imageUrl
+                            )
                             arrayOfResults.add(recognizedBird)
+                        }
                     }
 
                     onSuccess(arrayOfResults)
@@ -87,22 +95,5 @@ object RecognitionClient {
                 }
             }
         })
-    }
-
-    private fun decodeUnicode(input: String): String {
-        val pattern = Pattern.compile("\\\\u(\\p{XDigit}{4})")
-        val matcher = pattern.matcher(input)
-        val buffer = StringBuffer(input.length)
-        while (matcher.find()) {
-            val hex = matcher.group(1)
-            val codePoint = hex?.let { Integer.parseInt(it, 16) }
-            matcher.appendReplacement(buffer, "")
-
-            if (codePoint != null) {
-                buffer.appendCodePoint(codePoint)
-            }
-        }
-        matcher.appendTail(buffer)
-        return buffer.toString()
     }
 }

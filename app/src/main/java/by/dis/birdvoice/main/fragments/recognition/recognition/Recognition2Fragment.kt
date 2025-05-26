@@ -14,8 +14,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class  Recognition2Fragment: BaseMainFragment() {
+class Recognition2Fragment : BaseMainFragment() {
 
     private lateinit var binding: FragmentRecognition2Binding
     private val scope = CoroutineScope(Dispatchers.IO + Job())
@@ -29,7 +30,7 @@ class  Recognition2Fragment: BaseMainFragment() {
 
         binding = FragmentRecognition2Binding.inflate(layoutInflater)
 
-        activityMain.setPopBackCallback{ mainVM.recognition2Value.value = true }
+        activityMain.setPopBackCallback { mainVM.recognition2Value.value = true }
 
         return binding.root
     }
@@ -39,12 +40,18 @@ class  Recognition2Fragment: BaseMainFragment() {
 
         activityMain.showBottomNav()
 
-        scope.launch {
-            binding.recognition2Rv.apply {
-                activityMain.runOnUiThread {
-                    layoutManager = LinearLayoutManager(activityMain.getApp().getContext())
-                    adapter = Recognition2Adapter(
-                        activityMain.getApp().getContext(),
+        if (mainVM.getResults().isEmpty()) {
+            binding.recognition2Rv.visibility = View.GONE
+            binding.recognition2Placeholder?.visibility = View.VISIBLE
+        } else {
+            binding.recognition2Placeholder?.visibility = View.GONE
+            binding.recognition2Rv.visibility = View.VISIBLE
+
+            scope.launch {
+                withContext(Dispatchers.Main) {
+                    binding.recognition2Rv.layoutManager = LinearLayoutManager(requireContext())
+                    binding.recognition2Rv.adapter = Recognition2Adapter(
+                        requireContext(),
                         mainVM,
                         activityMain,
                         scope
@@ -54,7 +61,7 @@ class  Recognition2Fragment: BaseMainFragment() {
         }
 
         mainVM.setToolbarTitle(resources.getString(R.string.recognition_results))
-        activityMain.setToolbarAction(R.drawable.ic_arrow_back){
+        activityMain.setToolbarAction(R.drawable.ic_arrow_back) {
             navigationBackAction { mainVM.recognition2Value.value = true }
         }
     }
