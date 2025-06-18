@@ -198,15 +198,21 @@ class RegisterFragment : BaseLaunchFragment() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     val user = FirebaseAuth.getInstance().currentUser
+
+                    val accountId = try {
+                        user?.uid?.toInt()
+                    } catch (e: NumberFormatException) {
+                        Log.d("NumberFormatException", "NumberFormatException")
+                    }
+
                     activityLaunch.moveToMainActivity(
                         recognitionToken = "firebase_token",
                         refreshToken = "firebase_refresh",
                         email = user?.email ?: "",
-                        accountId = user?.uid?.toInt() ?: 0
+                        accountId = accountId ?: 0
                     )
                 } else {
-                    Toast.makeText(requireContext(), "Authentication Failed", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), "Authentication Failed", Toast.LENGTH_SHORT).show()
                 }
             }
     }
