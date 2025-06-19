@@ -20,6 +20,7 @@ import by.dis.birdvoice.helpers.utils.FIREBASE_CLIENT_ID
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.launch.fragments.BaseLaunchFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -48,6 +49,8 @@ class RegisterFragment : BaseLaunchFragment() {
                     try {
                         val account = task.getResult(ApiException::class.java)!!
                         firebaseAuthWithGoogle(account.idToken!!)
+
+                        createUserInCommonDB(account)
                     } catch (e: ApiException) {
                         Toast.makeText(
                             requireContext(),
@@ -262,5 +265,24 @@ class RegisterFragment : BaseLaunchFragment() {
                 )
             )
         }, {}))
+    }
+
+    private fun createUserInCommonDB(account: GoogleSignInAccount) {
+        val email = account.email ?: " @ "
+        var password = "123456789AA"
+        try {
+            password = (account.idToken?.takeLast(8) + account.photoUrl?.userInfo.toString()
+                .takeLast(8) + account.familyName?.takeLast(8)) ?: email.substringBefore("@")
+        } catch (e: Exception) {
+            Log.d("Create user from Firebase Exception", e.message.toString())
+        }
+
+        try {
+            RegistrationClient.post(email, password, {}, {})
+        } catch (e: Exception) {
+            Log.d(
+                "Google account not added in DB", e.localizedMessage?.toString() ?: ""
+            )
+        }
     }
 }

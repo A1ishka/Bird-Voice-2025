@@ -1,5 +1,6 @@
 package by.dis.birdvoice.client.recognition
 
+import android.util.Log
 import by.dis.birdvoice.db.objects.RecognizedBird
 import okhttp3.Call
 import okhttp3.Callback
@@ -32,7 +33,11 @@ object RecognitionClient {
         onSuccess: (ArrayList<RecognizedBird>) -> Unit,
         onFailure: (String) -> Unit
     ) {
-        val username = email.substringBefore("@")
+        val username = try {
+            email.substringBefore("@")
+        } catch (e: NumberFormatException) {
+            Log.d("sendToDatabase NumberFormatException", e.message.toString())
+        } ?: " "
 
         val audioType = audioFile.extension
 
@@ -43,7 +48,7 @@ object RecognitionClient {
                 "$username audio.$audioType",
                 audioFile.asRequestBody("audio/mpeg".toMediaType())
             )
-            .addFormDataPart("username", username)
+            .addFormDataPart("email", email)
             .addFormDataPart("language", language.toString())
             .build()
 
@@ -61,7 +66,13 @@ object RecognitionClient {
                 val responseBody = response.body?.string()
                 val midString = responseBody?.substring(1, responseBody.length - 1)
                 val finalString = (midString?.let { decodeUnicode(it) })?.replace("\\", "")
+                Log.d("FINAL STRING RESPONSE", finalString.toString())
+
                 try {
+                    if ((finalString?.isEmpty()) != false) {
+                        onFailure("Birds were not recognized")
+                    }
+
                     val jObject = finalString?.let { JSONObject(it) }
                     val keys = jObject?.keys()
 
