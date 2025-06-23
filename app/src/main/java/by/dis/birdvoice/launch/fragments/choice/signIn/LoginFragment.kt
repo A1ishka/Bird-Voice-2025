@@ -186,7 +186,7 @@ class LoginFragment : BaseLaunchFragment() {
             activity = activityLaunch,
             binding = binding
         )
-        errorValue += helpFunctions.checkPasswordInput(
+        errorValue += helpFunctions.checkPasswordInputForLogin(
             binding.loginPasswordInput,
             binding.loginPasswordErrorMessage,
             resources,

@@ -219,6 +219,45 @@ class HelpFunctions(private val mainApp: MainApp) {
             mainApp.getContext(),
             R.anim.common_error_message_animation
         )
+        val password = checkableView.text?.toString() ?: ""
+
+        val errors = mutableListOf<String>()
+
+        val hasMinLength = password.length >= 8
+        val hasUpperCase = password.contains(Regex("[A-Z]"))
+        val hasSpecialChar = password.contains(Regex("[^a-zA-Z0-9]"))
+
+        if (password.isEmpty()) {
+            errors.add(resources.getString(R.string.this_field_must_be_not_empty))
+        } else {
+            if (!hasMinLength)
+                errors.add(resources.getString(R.string.password_length_error))
+            if (!hasUpperCase)
+                errors.add(resources.getString(R.string.password_letter_error))
+            if (!hasSpecialChar)
+                errors.add(context.getString(R.string.password_symbol_error))
+        }
+
+        return if (errors.isNotEmpty()) {
+            errorView.text = errors.joinToString("\n")
+            errorView.startAnimation(errorAnim)
+            errorView.visibility = View.VISIBLE
+            checkableView.setTextColor(ContextCompat.getColor(context, R.color.primary_red))
+            1
+        } else 0
+    }
+
+
+    fun checkPasswordInputForLogin(
+        checkableView: AppCompatEditText,
+        errorView: TextView,
+        resources: Resources,
+        context: Context
+    ): Int {
+        val errorAnim = AnimationUtils.loadAnimation(
+            mainApp.getContext(),
+            R.anim.common_error_message_animation
+        )
         return if (checkableView.text?.isEmpty() == true) {
             val errorText = resources.getString(R.string.this_field_must_be_not_empty)
 
