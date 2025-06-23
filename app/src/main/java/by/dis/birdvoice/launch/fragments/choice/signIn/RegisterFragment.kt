@@ -79,6 +79,7 @@ class RegisterFragment : BaseLaunchFragment() {
                 ViewObject(registerBottomLeftCloud, "lc2"),
                 ViewObject(registerTopRightCloud, "rc1"),
                 ViewObject(registerBottomRightCloud, "rc2"),
+                ViewObject(registerGoogleClickable),
                 ViewObject(registerNewAccountText),
                 ViewObject(registerEmailTitle),
                 ViewObject(registerEmailInput),

@@ -79,6 +79,7 @@ class LoginFragment : BaseLaunchFragment() {
                 ViewObject(loginBottomLeftCloud, "lc1"),
                 ViewObject(loginBottomRightCloud, "rc2"),
                 ViewObject(loginTopRightCloud, "rc1"),
+                ViewObject(loginGoogleClickable),
                 ViewObject(loginBird),
                 ViewObject(loginEmailTitle),
                 ViewObject(loginEmailInput),
