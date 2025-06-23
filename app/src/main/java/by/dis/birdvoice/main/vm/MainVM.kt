@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -87,12 +88,14 @@ class MainVM : ViewModel() {
                     activity
                 )
             }
+
             drawerButtonFeedback.setOnClickListener {
                 initDrawerButtonAction(
                     R.id.feedbackFragment,
                     activity
                 )
             }
+
             drawerButtonLogOut.setOnClickListener {
                 val dialogLogOutLanguageArray = arrayListOf(
                     ContextCompat.getString(activity, R.string.sign_out),
@@ -100,21 +103,35 @@ class MainVM : ViewModel() {
                     ContextCompat.getString(activity, R.string.dialog_cancel),
                     ContextCompat.getString(activity, R.string.yes)
                 )
-
-                DialogCommonInitiator().initCommonDialog(activity, dialogLogOutLanguageArray, {
-                    it.dismiss()
-                    activity.closeDrawer()
-
-                    LogoutClient().logOut(refresh, {
-                        activity.getLoginManager().removeTokens()
-                        intentBack(activity)
-                    }, { message ->
-                        activity.runOnUiThread {
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+                if (refresh == "firebase_refresh") {
+                    DialogCommonInitiator().initCommonDialog(activity, dialogLogOutLanguageArray, {
+                        it.dismiss()
+                        activity.closeDrawer()
+                        Log.d("Logout refreshToken", "refreshToken 000")
+                        try {
+                            activity.getLoginManager().removeTokens()
+                            intentBack(activity)
+                        } catch (e: Exception) {
+                            Log.d("Account throw Google exception", e.message.toString())
+                            Toast.makeText(activity, e.message, Toast.LENGTH_SHORT).show()
                         }
                     })
-                })
+                } else {
+                    DialogCommonInitiator().initCommonDialog(activity, dialogLogOutLanguageArray, {
+                        it.dismiss()
+                        activity.closeDrawer()
+                        LogoutClient().logOut(refresh, {
+                            activity.getLoginManager().removeTokens()
+                            intentBack(activity)
+                        }, { message ->
+                            activity.runOnUiThread {
+                                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    })
+                }
             }
+
             drawerButtonDelete.setOnClickListener {
                 val dialogLogOutLanguageArray = arrayListOf(
                     ContextCompat.getString(activity, R.string.delete),
@@ -127,7 +144,7 @@ class MainVM : ViewModel() {
                     it.dismiss()
                     activity.closeDrawer()
 
-                    LogoutClient().deleteUser(accountId, refresh, {
+                    LogoutClient().deleteUser(accountId!!, refresh, {
                         activity.getLoginManager().removeTokens()
                         intentBack(activity)
                     }, { message ->
@@ -244,9 +261,9 @@ class MainVM : ViewModel() {
     //Token
     private var access: String = ""
     private var refresh: String = ""
-    private var accountId: Int = 0
+    private var accountId: Int? = 0
     fun getAccessToken() = access
-    fun setTokens(access: String, refresh: String, accountId: Int) {
+    fun setTokens(access: String, refresh: String, accountId: Int?) {
         this.access = access
         this.refresh = refresh
         this.accountId = accountId

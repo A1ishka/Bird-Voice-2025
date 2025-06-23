@@ -49,7 +49,7 @@ class MainActivity : BaseActivity() {
     private var recognitionToken = ""
     private var refreshToken = ""
     private var email = ""
-    private var accountId = 0
+    private var accountId: Int? = 0
 
     private val mainApp = MainApp()
     private val mainVM: MainVM by viewModels()

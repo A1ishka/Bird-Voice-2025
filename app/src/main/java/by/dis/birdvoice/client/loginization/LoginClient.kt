@@ -38,7 +38,7 @@ object LoginClient {
 
                     try {
                         val jObject = responseBody?.let { it1 -> JSONObject(it1) }
-                        if (jObject?.getString("message") == "Login successful")
+                        if (jObject?.getString("message") == "Login successfull")
                             onSuccess(
                                 jObject.getJSONObject("token").getString("access"),
                                 jObject.getJSONObject("token").getString("refresh"),

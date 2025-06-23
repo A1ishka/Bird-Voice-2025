@@ -23,6 +23,8 @@
     <string name="email_error_valid">Enter valid email</string>
     <string name="this_field_must_be_not_empty">Гэтае поле не павінна быць пустым</string>
     <string name="password_length_error">Даўжыня пароля павінна быць 8 або больш знакаў</string>
+    <string name="password_letter_error">Пароль павінен змяшчаць хаця б адну вялікую літару</string>
+    <string name="password_symbol_error">Пароль павінен змяшчаць хаця б адзін \nспецыяльны сімвал</string>
     <string name="please_enter_the_code">Калі ласка, увядзіце код</string>
     <string name="space_is_not_allowed">Прабел тут не дапускаецца</string>
 

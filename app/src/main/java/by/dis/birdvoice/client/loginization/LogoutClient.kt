@@ -1,5 +1,6 @@
 package by.dis.birdvoice.client.loginization
 
+import android.util.Log
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,7 +15,7 @@ class LogoutClient {
     private var logoutClient: OkHttpClient? = null
 
     fun logOut(refreshToken: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
-
+        Log.d("logout refreshToken", refreshToken)
         if (logoutClient == null) logoutClient = OkHttpClient.Builder().build()
 
         val mediaType = "application/json".toMediaType()
@@ -47,7 +48,12 @@ class LogoutClient {
         })
     }
 
-    fun deleteUser(accountId: Int, refreshToken: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+    fun deleteUser(
+        accountId: Int,
+        refreshToken: String,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
 
         if (logoutClient == null) logoutClient = OkHttpClient.Builder().build()
 
