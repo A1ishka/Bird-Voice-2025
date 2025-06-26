@@ -189,13 +189,14 @@
                 android:textColor="@color/primary_red"
                 android:fontFamily="@font/roboto"
 
-                android:visibility="invisible"
-
                 android:layout_marginEnd="24dp"
                 android:layout_marginTop="4dp"
                 android:elevation="6dp"
 
-                app:layout_constraintStart_toStartOf="@id/register_password_input"
+                android:visibility="invisible"
+
+                android:paddingHorizontal="24dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/register_password_input"/>
 
             <androidx.appcompat.widget.AppCompatEditText
