@@ -45,66 +45,86 @@
                 android:text="@string/new_account"
                 android:textColor="@color/primary_blue"
                 android:textStyle="bold"
-                android:textSize="30sp"
+                android:textSize="34sp"
                 android:fontFamily="@font/roboto"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <TextView
-                android:id="@+id/register_sign_up_text"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/register_google_clickable"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="18dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginHorizontal="24dp"
 
-                android:layout_marginTop="6dp"
-                android:paddingHorizontal="8dp"
+                android:background="@drawable/background_launcher_edittext"
+                android:elevation="4dp"
+                android:clickable="true"
+                android:focusable="true"
 
-                android:text="@string/sign_up_to_continue"
-                android:textSize="15sp"
-                android:textColor="@color/primary_blue"
-                android:fontFamily="@font/roboto"
+                app:layout_constraintTop_toBottomOf="@id/register_top_right_cloud"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                app:layout_constraintStart_toStartOf="@id/register_new_account_text"
-                app:layout_constraintEnd_toEndOf="@id/register_new_account_text"
-                app:layout_constraintTop_toBottomOf="@id/register_new_account_text"/>
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_google_logo"
+                    android:contentDescription="@string/sign_up_via_google"
+                    android:layout_marginEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/register_google_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_up_via_google"
+                    android:textColor="@color/primary_blue"
+                    android:textSize="26sp"
+                    android:fontFamily="@font/roboto" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/register_username_title"
+                android:id="@+id/register_email_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:text="@string/email"
                 android:textColor="@color/primary_blue"
-                android:textSize="14sp"
+                android:textSize="20sp"
                 android:fontFamily="@font/roboto"
 
                 android:layout_marginTop="32dp"
                 android:layout_marginHorizontal="24dp"
 
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_sign_up_text"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/register_google_clickable" />
 
             <TextView
-                android:id="@+id/register_username_error_message"
+                android:id="@+id/register_email_error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:textSize="12sp"
+                android:textSize="18sp"
                 android:textColor="@color/primary_red"
                 android:fontFamily="@font/roboto"
 
                 android:visibility="invisible"
 
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:elevation="6dp"
 
-                app:layout_constraintStart_toStartOf="@id/register_username_input"
-                app:layout_constraintTop_toBottomOf="@id/register_username_input"/>
+                app:layout_constraintStart_toStartOf="@id/register_email_input"
+                app:layout_constraintTop_toBottomOf="@id/register_email_input"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/register_username_input"
+                android:id="@+id/register_email_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
@@ -114,7 +134,7 @@
                 android:paddingVertical="16dp"
                 android:paddingHorizontal="22dp"
 
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textColor="@color/primary_blue"
                 android:fontFamily="@font/roboto"
 
@@ -123,9 +143,9 @@
                 android:maxLength="28"
                 android:inputType="text"
 
-                app:layout_constraintStart_toStartOf="@id/register_username_title"
-                app:layout_constraintEnd_toEndOf="@id/register_username_title"
-                app:layout_constraintTop_toBottomOf="@id/register_username_title"/>
+                app:layout_constraintStart_toStartOf="@id/register_email_title"
+                app:layout_constraintEnd_toEndOf="@id/register_email_title"
+                app:layout_constraintTop_toBottomOf="@id/register_email_title"/>
 
             <TextView
                 android:id="@+id/register_password_title"
@@ -134,7 +154,7 @@
 
                 android:text="@string/password"
                 android:textColor="@color/primary_blue"
-                android:textSize="14sp"
+                android:textSize="20sp"
                 android:fontFamily="@font/roboto"
 
                 android:layout_marginTop="32dp"
@@ -142,21 +162,21 @@
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_username_input"/>
+                app:layout_constraintTop_toBottomOf="@id/register_email_input"/>
 
             <TextView
                 android:id="@+id/register_password_error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:textSize="12sp"
+                android:textSize="18sp"
                 android:textColor="@color/primary_red"
                 android:fontFamily="@font/roboto"
 
                 android:visibility="invisible"
 
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:elevation="6dp"
 
                 app:layout_constraintStart_toStartOf="@id/register_password_input"
@@ -173,7 +193,7 @@
                 android:paddingVertical="18dp"
                 android:paddingHorizontal="22dp"
 
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textColor="@color/primary_blue"
                 android:fontFamily="@font/roboto"
                 android:inputType="textPassword"
@@ -193,7 +213,7 @@
 
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/ripple_rounded"
-                android:padding="8dp"
+                android:padding="10dp"
                 android:elevation="4dp"
 
                 android:src="@drawable/ic_launcher_show_password"
@@ -241,7 +261,7 @@
 
                 android:text="@string/by_continuing_you_agree_to_our_privacy_policy"
                 android:textColor="@color/primary_blue"
-                android:textSize="14sp"
+                android:textSize="22sp"
                 android:fontFamily="@font/roboto"
                 android:textColorLink="@color/primary_blue"
                 android:linksClickable="true"
@@ -252,7 +272,7 @@
                 android:focusable="true"
 
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="14dp"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -265,7 +285,7 @@
 
                 style="@style/LauncherButton"
                 android:text="@string/create"
-                android:textSize="16sp"
+                android:textSize="24sp"
 
                 android:clickable="false"
 

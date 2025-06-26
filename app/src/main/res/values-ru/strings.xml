@@ -2,15 +2,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">GukiNet</string>
 
-    <!-- Choice -->
+    <!--  Choice  -->
     <string name="launcher_app_name">голос птицы</string>
     <string name="log_in">Войти</string>
     <string name="new_account">Новый аккаунт</string>
 
     <!--  Login  -->
     <string name="welcome_back">С возвращением!</string>
-    <string name="sign_in_to_continue">Войдите, чтобы продолжить</string>
-    <string name="sign_up_to_continue">Зарегистрируйтесь, чтобы продолжить</string>
+    <string name="sign_in_via_google">Войти через Google</string>
+    <string name="sign_up_via_google">Войти через Google</string>
     <string name="email">Электронная почта</string>
     <string name="password">Пароль (минимум 8 символов)</string>
     <string name="remember_me">Запомнить меня</string>
@@ -23,6 +23,8 @@
     <string name="email_error_valid">Enter valid email</string>
     <string name="this_field_must_be_not_empty">Это поле не должно быть пустым</string>
     <string name="password_length_error">Длина пароля должна быть 8 или более символов</string>
+    <string name="password_letter_error">Пароль должен содержать хотя бы одну заглавную букву</string>
+    <string name="password_symbol_error">Пароль должен содержать хотя бы один \nспециальный символ</string>
     <string name="please_enter_the_code">Пожалуйста, введите код</string>
     <string name="space_is_not_allowed">Пробел здесь недопустим</string>
 
@@ -34,7 +36,6 @@
     <!--  Additional  -->
     <string name="by_continuing_you_agree_to_our_privacy_policy">Продолжая, вы соглашаетесь с нашей <a href="http://google.com">политикой конфиденциальности</a>.</string>
     <string name="additional_information">Дополнительная информация</string>
-    <string name="username">Никнейм</string>
     <string name="first_name">Имя</string>
     <string name="last_name">Фамилия</string>
     <string name="model_isnt_loaded">Языковая модель ещё загружена</string>
