@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Bird Voice</string>
+    <string name="app_name">GukiNet</string>
 
-    <!-- Choice -->
+    <!--  Choice  -->
     <string name="launcher_app_name">голас птушкі</string>
     <string name="log_in">Увайсці</string>
     <string name="new_account">Новы акаўнт</string>
 
     <!--  Login  -->
     <string name="welcome_back">З вяртаннем!</string>
-    <string name="sign_in_to_continue">Увайдзіце, каб працягнуць</string>
-    <string name="sign_up_to_continue">Зарэгіструйцеся, каб працягнуць</string>
+    <string name="sign_in_via_google">Вайсцi праз Google</string>
+    <string name="sign_up_via_google">Вайсцi праз Google</string>
     <string name="email">Пошта</string>
     <string name="password">Пароль (мінімум 8 знакаў)</string>
     <string name="remember_me">Запомніць мяне</string>
@@ -23,6 +23,8 @@
     <string name="email_error_valid">Enter valid email</string>
     <string name="this_field_must_be_not_empty">Гэтае поле не павінна быць пустым</string>
     <string name="password_length_error">Даўжыня пароля павінна быць 8 або больш знакаў</string>
+    <string name="password_letter_error">Пароль павінен змяшчаць хаця б адну вялікую літару</string>
+    <string name="password_symbol_error">Пароль павінен змяшчаць хаця б адзін \nспецыяльны сімвал</string>
     <string name="please_enter_the_code">Калі ласка, увядзіце код</string>
     <string name="space_is_not_allowed">Прабел тут не дапускаецца</string>
 
@@ -34,7 +36,6 @@
     <!--  Additional  -->
     <string name="by_continuing_you_agree_to_our_privacy_policy">Працягваючы вы згаджаецеся з нашай <a href="http://google.com">палітыкай прыватнасці</a>.</string>
     <string name="additional_information">Дадатковая інфармацыя</string>
-    <string name="username">Нікнэйм</string>
     <string name="first_name">Імя</string>
     <string name="last_name">Фамілія</string>
     <string name="model_isnt_loaded">Моўная мадэль яшчэ не загружана</string>

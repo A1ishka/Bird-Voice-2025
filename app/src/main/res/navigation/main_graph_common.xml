@@ -9,7 +9,7 @@
     <include app:graph="@navigation/main_graph_collection" />
     <fragment
         android:id="@+id/informPageFragment"
-        android:name="by.ssrlab.birdvoice.main.fragments.InformPageFragment"
+        android:name="by.dis.birdvoice.main.fragments.InformPageFragment"
         android:label="InformPageFragment" >
         <action
             android:id="@+id/action_informPageFragment_to_main_graph_record"
