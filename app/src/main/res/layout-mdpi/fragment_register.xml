@@ -60,7 +60,6 @@
                 android:layout_marginTop="6dp"
                 android:paddingHorizontal="8dp"
 
-                android:text="@string/sign_up_to_continue"
                 android:textSize="14sp"
                 android:textColor="@color/primary_blue"
                 android:fontFamily="@font/roboto"
@@ -69,8 +68,46 @@
                 app:layout_constraintEnd_toEndOf="@id/register_new_account_text"
                 app:layout_constraintTop_toBottomOf="@id/register_new_account_text"/>
 
+
+            <LinearLayout
+                android:id="@+id/register_google_clickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="18dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="24dp"
+
+                android:background="@drawable/background_launcher_edittext"
+                android:elevation="4dp"
+                android:clickable="true"
+                android:focusable="true"
+
+                app:layout_constraintTop_toBottomOf="@id/register_top_right_cloud"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_google_logo"
+                    android:contentDescription="@string/sign_up_via_google"
+                    android:layout_marginEnd="12dp" />
+
+                <TextView
+                    android:id="@+id/register_google_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_up_via_google"
+                    android:textColor="@color/primary_blue"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/roboto" />
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/register_username_title"
+                android:id="@+id/register_email_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -82,12 +119,12 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginHorizontal="24dp"
 
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_sign_up_text"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/register_google_clickable" />
 
             <TextView
-                android:id="@+id/register_username_error_message"
+                android:id="@+id/register_email_error_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -100,11 +137,11 @@
                 android:layout_marginTop="4dp"
                 android:elevation="6dp"
 
-                app:layout_constraintStart_toStartOf="@id/register_username_input"
-                app:layout_constraintTop_toBottomOf="@id/register_username_input"/>
+                app:layout_constraintStart_toStartOf="@id/register_email_input"
+                app:layout_constraintTop_toBottomOf="@id/register_email_input"/>
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/register_username_input"
+                android:id="@+id/register_email_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
@@ -123,9 +160,9 @@
                 android:maxLength="28"
                 android:inputType="text"
 
-                app:layout_constraintStart_toStartOf="@id/register_username_title"
-                app:layout_constraintEnd_toEndOf="@id/register_username_title"
-                app:layout_constraintTop_toBottomOf="@id/register_username_title"/>
+                app:layout_constraintStart_toStartOf="@id/register_email_title"
+                app:layout_constraintEnd_toEndOf="@id/register_email_title"
+                app:layout_constraintTop_toBottomOf="@id/register_email_title"/>
 
             <TextView
                 android:id="@+id/register_password_title"
@@ -142,7 +179,7 @@
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_username_input"/>
+                app:layout_constraintTop_toBottomOf="@id/register_email_input"/>
 
             <TextView
                 android:id="@+id/register_password_error_message"

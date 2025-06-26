@@ -58,7 +58,7 @@
             android:src="@drawable/login_bird"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_sign_in_text"
+            app:layout_constraintTop_toBottomOf="@id/login_welcome_text"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
@@ -80,25 +80,44 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/login_sign_in_text"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/login_google_clickable"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="22dp"
+            android:paddingVertical="18dp"
             android:layout_marginTop="6dp"
-            android:paddingHorizontal="8dp"
+            android:layout_marginHorizontal="26dp"
+            android:background="@drawable/background_launcher_edittext"
+            android:elevation="4dp"
+            android:clickable="true"
+            android:focusable="true"
 
-            android:text="@string/sign_in_to_continue"
-            android:textSize="15sp"
-            android:textColor="@color/primary_blue"
-            android:fontFamily="@font/roboto"
+            app:layout_constraintTop_toBottomOf="@id/login_bird"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            app:layout_constraintStart_toStartOf="@id/login_welcome_text"
-            app:layout_constraintEnd_toEndOf="@id/login_welcome_text"
-            app:layout_constraintTop_toBottomOf="@id/login_welcome_text"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_google_logo"
+                android:contentDescription="@string/sign_in_via_google"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:id="@+id/register_google_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_in_via_google"
+                android:textColor="@color/primary_blue"
+                android:textSize="20sp"
+                android:fontFamily="@font/roboto" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/login_username_title"
+            android:id="@+id/login_email_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -107,14 +126,15 @@
             android:textSize="15sp"
             android:fontFamily="@font/roboto"
 
+            android:layout_marginVertical="16dp"
             android:layout_marginHorizontal="24dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_bird"/>
+            app:layout_constraintTop_toBottomOf="@id/login_google_clickable"/>
 
         <TextView
-            android:id="@+id/login_username_error_message"
+            android:id="@+id/login_email_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -127,11 +147,11 @@
             android:textSize="11sp"
             android:visibility="invisible"
 
-            app:layout_constraintStart_toStartOf="@id/login_username_input"
-            app:layout_constraintTop_toBottomOf="@id/login_username_input" />
+            app:layout_constraintStart_toStartOf="@id/login_email_input"
+            app:layout_constraintTop_toBottomOf="@id/login_email_input" />
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/login_username_input"
+            android:id="@+id/login_email_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
 
@@ -150,9 +170,9 @@
             android:maxLength="28"
             android:inputType="text"
 
-            app:layout_constraintStart_toStartOf="@id/login_username_title"
-            app:layout_constraintEnd_toEndOf="@id/login_username_title"
-            app:layout_constraintTop_toBottomOf="@id/login_username_title"/>
+            app:layout_constraintStart_toStartOf="@id/login_email_title"
+            app:layout_constraintEnd_toEndOf="@id/login_email_title"
+            app:layout_constraintTop_toBottomOf="@id/login_email_title"/>
 
         <TextView
             android:id="@+id/login_password_title"
@@ -169,7 +189,7 @@
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_username_input"/>
+            app:layout_constraintTop_toBottomOf="@id/login_email_input"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/login_password_input"
