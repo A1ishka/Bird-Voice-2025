@@ -25,8 +25,8 @@
 
             <ImageView
                 android:id="@+id/register_top_right_cloud"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="230dp"
+                android:layout_height="155dp"
 
                 android:src="@drawable/register_cloud_top_right"
 
@@ -45,7 +45,7 @@
                 android:text="@string/new_account"
                 android:textColor="@color/primary_blue"
                 android:textStyle="bold"
-                android:textSize="34sp"
+                android:textSize="48sp"
                 android:fontFamily="@font/roboto"
 
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,8 +59,8 @@
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:paddingHorizontal="22dp"
-                android:paddingVertical="18dp"
-                android:layout_marginTop="26dp"
+                android:paddingVertical="24dp"
+                android:layout_marginTop="34dp"
                 android:layout_marginHorizontal="24dp"
 
                 android:background="@drawable/background_launcher_edittext"
@@ -73,8 +73,8 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@drawable/ic_google_logo"
                     android:contentDescription="@string/sign_up_via_google"
                     android:layout_marginEnd="16dp" />
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/sign_up_via_google"
                     android:textColor="@color/primary_blue"
-                    android:textSize="26sp"
+                    android:textSize="38sp"
                     android:fontFamily="@font/roboto" />
             </LinearLayout>
 
@@ -96,10 +96,10 @@
 
                 android:text="@string/email"
                 android:textColor="@color/primary_blue"
-                android:textSize="20sp"
+                android:textSize="34sp"
                 android:fontFamily="@font/roboto"
 
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="38dp"
                 android:layout_marginHorizontal="24dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
@@ -131,10 +131,10 @@
                 android:background="@drawable/background_launcher_edittext"
                 android:elevation="4dp"
                 android:layout_marginTop="4dp"
-                android:paddingVertical="16dp"
+                android:paddingVertical="26dp"
                 android:paddingHorizontal="22dp"
 
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textColor="@color/primary_blue"
                 android:fontFamily="@font/roboto"
 
@@ -154,10 +154,10 @@
 
                 android:text="@string/password"
                 android:textColor="@color/primary_blue"
-                android:textSize="20sp"
+                android:textSize="34sp"
                 android:fontFamily="@font/roboto"
 
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="38dp"
                 android:layout_marginHorizontal="24dp"
 
                 app:layout_constraintStart_toStartOf="parent"
@@ -191,10 +191,10 @@
                 android:background="@drawable/background_launcher_edittext"
                 android:elevation="4dp"
                 android:layout_marginTop="4dp"
-                android:paddingVertical="18dp"
+                android:paddingVertical="26dp"
                 android:paddingHorizontal="22dp"
 
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textColor="@color/primary_blue"
                 android:fontFamily="@font/roboto"
                 android:inputType="textPassword"
@@ -225,8 +225,10 @@
 
             <ImageView
                 android:id="@+id/register_bottom_left_cloud"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="315dp"
+                android:layout_height="263dp"
+
+                android:layout_marginTop="70dp"
 
                 android:src="@drawable/register_cloud_bottom_left"
 
@@ -235,18 +237,18 @@
 
             <ImageView
                 android:id="@+id/register_bottom_right_cloud"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="205dp"
+                android:layout_height="245dp"
 
                 android:src="@drawable/register_cloud_bottom_right"
 
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_password_input"/>
+                app:layout_constraintTop_toBottomOf="@id/register_password_input" />
 
             <ImageView
                 android:id="@+id/register_bird"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="163dp"
+                android:layout_height="126dp"
 
                 android:src="@drawable/register_bird"
 
@@ -262,7 +264,7 @@
 
                 android:text="@string/by_continuing_you_agree_to_our_privacy_policy"
                 android:textColor="@color/primary_blue"
-                android:textSize="22sp"
+                android:textSize="32sp"
                 android:fontFamily="@font/roboto"
                 android:textColorLink="@color/primary_blue"
                 android:linksClickable="true"
@@ -273,7 +275,7 @@
                 android:focusable="true"
 
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="74dp"
 
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -282,18 +284,18 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/register_create_button"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="100dp"
 
                 style="@style/LauncherButton"
                 android:text="@string/create"
-                android:textSize="24sp"
+                android:textSize="40sp"
 
                 android:clickable="false"
 
                 app:icon="@drawable/ic_bird"
 
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="20dp"
 
                 app:cornerRadius="32dp"
 

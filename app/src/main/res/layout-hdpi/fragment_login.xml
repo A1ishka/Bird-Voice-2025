@@ -20,6 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
+            android:scaleX="2.5"
+            android:scaleY="2.5"
+
             android:src="@drawable/login_cloud_top_right"
 
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +32,9 @@
             android:id="@+id/login_bottom_left_cloud"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:scaleX="2.5"
+            android:scaleY="2.5"
 
             android:src="@drawable/login_cloud_bottom_left"
 
@@ -40,9 +46,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
+            android:scaleX="2.5"
+            android:scaleY="2.5"
+
             android:src="@drawable/login_cloud_bottom_right"
 
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="80dp"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_top_right_cloud"/>
@@ -52,9 +61,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:scaleX="0.85"
-            android:scaleY="0.85"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
 
+            android:layout_marginTop="34dp"
             android:src="@drawable/login_bird"
 
             app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +84,7 @@
             android:text="@string/welcome_back"
             android:textColor="@color/primary_blue"
             android:textStyle="bold"
-            android:textSize="30sp"
+            android:textSize="48sp"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,8 +97,8 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:paddingHorizontal="22dp"
-            android:paddingVertical="18dp"
-            android:layout_marginTop="6dp"
+            android:paddingVertical="24dp"
+            android:layout_marginTop="90dp"
             android:layout_marginHorizontal="26dp"
             android:background="@drawable/background_launcher_edittext"
             android:elevation="4dp"
@@ -100,8 +110,8 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_google_logo"
                 android:contentDescription="@string/sign_in_via_google"
                 android:layout_marginEnd="12dp" />
@@ -112,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sign_in_via_google"
                 android:textColor="@color/primary_blue"
-                android:textSize="20sp"
+                android:textSize="38sp"
                 android:fontFamily="@font/roboto" />
         </LinearLayout>
 
@@ -123,10 +133,10 @@
 
             android:text="@string/email"
             android:textColor="@color/primary_blue"
-            android:textSize="15sp"
+            android:textSize="34sp"
             android:fontFamily="@font/roboto"
 
-            android:layout_marginVertical="16dp"
+            android:layout_marginVertical="44dp"
             android:layout_marginHorizontal="24dp"
 
             app:layout_constraintStart_toStartOf="parent"
@@ -158,10 +168,10 @@
             android:background="@drawable/background_launcher_edittext"
             android:elevation="4dp"
             android:layout_marginTop="4dp"
-            android:paddingVertical="16dp"
+            android:paddingVertical="26dp"
             android:paddingHorizontal="22dp"
 
-            android:textSize="18sp"
+            android:textSize="30sp"
             android:textColor="@color/primary_blue"
             android:fontFamily="@font/roboto"
 
@@ -181,10 +191,10 @@
 
             android:text="@string/password"
             android:textColor="@color/primary_blue"
-            android:textSize="15sp"
+            android:textSize="34sp"
             android:fontFamily="@font/roboto"
 
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="44dp"
             android:layout_marginHorizontal="24dp"
 
             app:layout_constraintStart_toStartOf="parent"
@@ -199,10 +209,10 @@
             android:background="@drawable/background_launcher_edittext"
             android:elevation="4dp"
             android:layout_marginTop="4dp"
-            android:paddingVertical="16dp"
+            android:paddingVertical="26dp"
             android:paddingHorizontal="22dp"
 
-            android:textSize="18sp"
+            android:textSize="30sp"
             android:textColor="@color/primary_blue"
             android:fontFamily="@font/roboto"
             android:inputType="textPassword"
@@ -225,6 +235,9 @@
             android:padding="8dp"
             android:elevation="4dp"
 
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+
             android:src="@drawable/ic_launcher_show_password"
 
             app:layout_constraintEnd_toEndOf="@id/login_password_input"
@@ -236,18 +249,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:textSize="11sp"
-            android:textColor="@color/primary_red"
+            android:paddingHorizontal="24dp"
+            android:layout_marginTop="4dp"
+            android:elevation="6dp"
             android:fontFamily="@font/roboto"
+
+            android:textColor="@color/primary_red"
+
+            android:textSize="14sp"
 
             android:visibility="invisible"
 
-            android:layout_marginTop="4dp"
-
-            android:elevation="6dp"
-
-            app:layout_constraintStart_toStartOf="@id/login_password_input"
-            app:layout_constraintTop_toBottomOf="@id/login_password_input"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/login_password_input" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/login_remember_me"
@@ -256,12 +271,12 @@
 
             android:text="@string/remember_me"
             android:textColor="@color/primary_blue"
-            android:textSize="14sp"
+            android:textSize="30sp"
             android:fontFamily="@font/roboto"
 
             app:buttonTint="@color/primary_button_blue"
 
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
 
             app:layout_constraintStart_toStartOf="@id/login_password_title"
             app:layout_constraintTop_toBottomOf="@id/login_password_input"/>
@@ -276,7 +291,7 @@
             android:text="@string/forgot_password"
             android:textColor="@color/secondary_text_blue"
             android:fontFamily="@font/roboto"
-            android:textSize="16sp"
+            android:textSize="30sp"
 
             app:layout_constraintTop_toTopOf="@id/login_remember_me"
             app:layout_constraintBottom_toBottomOf="@id/login_remember_me"
@@ -285,14 +300,14 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_sign_in_button"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="100dp"
 
             style="@style/LauncherButton"
             android:text="@string/sign_in"
-            android:textSize="16sp"
+            android:textSize="34sp"
 
             android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="100dp"
 
             app:icon="@drawable/ic_birdhouse"
 

@@ -20,7 +20,7 @@
     <string name="dont_have_additional"> <u>Зарегистрироваться</u></string>
 
     <!--  Errors  -->
-    <string name="email_error_valid">Enter valid email</string>
+    <string name="email_error_valid">Ошибка почты</string>
     <string name="this_field_must_be_not_empty">Это поле не должно быть пустым</string>
     <string name="password_length_error">Длина пароля должна быть 8 или более символов</string>
     <string name="password_letter_error">Пароль должен содержать хотя бы одну заглавную букву</string>
@@ -64,7 +64,7 @@
     <string name="file_saved">Файл сохранен!</string>
 
     <!--  Recognition page 1  -->
-    <string name="in_the_process_please_wait_a_bit" tools:ignore="TypographyEllipsis">Процесс распознавания... Подождите немного</string>
+    <string name="in_the_process_please_wait_a_bit" tools:ignore="TypographyEllipsis">Процесс распознавания... \nПодождите немного</string>
     <string name="recognition_1_dots" tools:ignore="TypographyEllipsis">...</string>
 
     <!--  Recognition page 2  -->

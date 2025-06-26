@@ -303,7 +303,7 @@
 
                 style="@style/LauncherButton"
                 android:text="@string/create"
-                android:textSize="16sp"
+                android:textSize="20sp"
 
                 android:clickable="false"
 

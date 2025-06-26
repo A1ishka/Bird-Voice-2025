@@ -64,7 +64,7 @@
     <string name="file_saved">File saved!</string>
 
     <!--  Recognition page 1  -->
-    <string name="in_the_process_please_wait_a_bit" tools:ignore="TypographyEllipsis">The recognition process... Wait a bit</string>
+    <string name="in_the_process_please_wait_a_bit" tools:ignore="TypographyEllipsis">The recognition process... \nWait a bit</string>
     <string name="recognition_1_dots" tools:ignore="TypographyEllipsis">...</string>
 
     <!--  Recognition page 2  -->
