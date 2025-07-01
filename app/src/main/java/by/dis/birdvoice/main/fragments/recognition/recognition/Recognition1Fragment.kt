@@ -21,7 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
-class Recognition1Fragment: BaseMainFragment() {
+class Recognition1Fragment : BaseMainFragment() {
 
     private lateinit var binding: FragmentRecognition1Binding
     override lateinit var arrayOfViews: ArrayList<ViewObject>
@@ -56,7 +56,12 @@ class Recognition1Fragment: BaseMainFragment() {
                 ViewObject(recognitionTopRightCloud, "rc1")
             )
 
-            recognitionLoaderIc.startAnimation(AnimationUtils.loadAnimation(activityMain, R.anim.recognition_loader_animation))
+            recognitionLoaderIc.startAnimation(
+                AnimationUtils.loadAnimation(
+                    activityMain,
+                    R.anim.recognition_loader_animation
+                )
+            )
         }
 
         animationUtils.commonDefineObjectsVisibility(arrayOfViews)
@@ -109,30 +114,77 @@ class Recognition1Fragment: BaseMainFragment() {
 
     private fun recognizeAudio() {
         if (isAudioPicked) {
-            val inputStream = mainVM.getUri()?.let { activityMain.contentResolver.openInputStream(it) }
-            val file = File(activityMain.getExternalFilesDir(Environment.DIRECTORY_DCIM), "bird_voice_recognition_temp_file.mp3")
+            val inputStream =
+                mainVM.getUri()?.let { activityMain.contentResolver.openInputStream(it) }
+            val file = File(
+                activityMain.getExternalFilesDir(Environment.DIRECTORY_DCIM),
+                "bird_voice_recognition_temp_file.mp3"
+            )
             file.outputStream().use {
                 it.write(inputStream?.readBytes())
                 it.close()
             }
 
-            RecognitionClient.sendToDatabase(file, activityMain.getEmail(), activityMain.getApp().getLocaleInt(), { list ->
-                mainVM.setList(list)
-                file.delete()
-                navigateAction()
-            }, { string ->
-                activityMain.runOnUiThread { Toast.makeText(activityMain, string, Toast.LENGTH_SHORT).show() }
-                file.delete()
-                navigateAction()
-            })
+            RecognitionClient.sendToDatabase(
+                file,
+                activityMain.getEmail(),
+                activityMain.getApp().getLocaleInt(),
+                { list ->
+                    mainVM.setList(list)
+                    file.delete()
+                    navigateAction()
+                },
+                { string ->
+                    if (string == "Birds were not recognized") {
+                        activityMain.runOnUiThread {
+                            Toast.makeText(
+                                activityMain,
+                                getString(R.string.birds_were_not_recognized),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        activityMain.runOnUiThread {
+                            Toast.makeText(
+                                activityMain,
+                                string,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        file.delete()
+                        navigateAction()
+                    }
+                })
         } else {
-            mainVM.getAudioFile()?.let { RecognitionClient.sendToDatabase(it, activityMain.getEmail(), activityMain.getApp().getLocaleInt(), { list ->
-                mainVM.setList(list)
-                navigateAction()
-            }) { string ->
-                activityMain.runOnUiThread { Toast.makeText(activityMain, string, Toast.LENGTH_SHORT).show() }
-                navigateAction()
-            }}
+            mainVM.getAudioFile()?.let {
+                RecognitionClient.sendToDatabase(
+                    it,
+                    activityMain.getEmail(),
+                    activityMain.getApp().getLocaleInt(),
+                    { list ->
+                        mainVM.setList(list)
+                        navigateAction()
+                    }) { string ->
+                    if (string == "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname") {
+                        activityMain.runOnUiThread {
+                            Toast.makeText(
+                                activityMain,
+                                getString(R.string.internet_connection_issue),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        activityMain.runOnUiThread {
+                            Toast.makeText(
+                                activityMain,
+                                string,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    navigateAction()
+                }
+            }
         }
     }
 

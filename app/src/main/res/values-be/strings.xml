@@ -27,6 +27,10 @@
     <string name="password_symbol_error">Пароль павінен змяшчаць хаця б адзін \nспецыяльны сімвал</string>
     <string name="please_enter_the_code">Калі ласка, увядзіце код</string>
     <string name="space_is_not_allowed">Прабел тут не дапускаецца</string>
+    <string name="internet_connection_issue">Праверце злучэнне з інтэрнэтам</string>
+    <string name="birds_were_not_recognized">Птушкi на запiсу не распазнаныя</string>
+    <string name="login_or_password_issue">Няправільны лагін ці пароль</string>
+    <string name="email_already_in_use">Пошта ўжо выкарыстоўваецца</string>
 
     <!--  Register  -->
     <string name="telephone_number">Нумар тэлефона</string>
