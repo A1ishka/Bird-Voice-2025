@@ -138,18 +138,53 @@ class HelpFunctions(private val mainApp: MainApp) {
         } else if (errorMessage != null) {
             if (binding is FragmentLoginBinding) {
                 activity.runOnUiThread {
-                    setErrorView(
-                        binding.loginEmailInput,
-                        binding.loginEmailErrorMessage,
-                        errorMessage,
-                        activity
-                    )
-                    setErrorView(
-                        binding.loginPasswordInput,
-                        binding.loginPasswordErrorMessage,
-                        errorMessage,
-                        activity
-                    )
+                    when (errorMessage) {
+                        "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname" ->
+                            setErrorView(
+                                binding.loginPasswordInput,
+                                binding.loginPasswordErrorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.internet_connection_issue
+                                ),
+                                activity
+                            )
+                        "Invalid email or password" -> {
+                            setErrorView(
+                                binding.loginEmailInput,
+                                binding.loginEmailErrorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.login_or_password_issue
+                                ),
+                                activity
+                            )
+                            setErrorView(
+                                binding.loginPasswordInput,
+                                binding.loginPasswordErrorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.login_or_password_issue
+                                ),
+                                activity
+                            )
+                        }
+
+                        else -> {
+                            setErrorView(
+                                binding.loginEmailInput,
+                                binding.loginEmailErrorMessage,
+                                errorMessage,
+                                activity
+                            )
+                            setErrorView(
+                                binding.loginPasswordInput,
+                                binding.loginPasswordErrorMessage,
+                                errorMessage,
+                                activity
+                            )
+                        }
+                    }
                 }
             } else if (binding is FragmentRegisterBinding) {
                 activity.runOnUiThread {
@@ -158,7 +193,10 @@ class HelpFunctions(private val mainApp: MainApp) {
                             setErrorView(
                                 binding.registerPasswordInput,
                                 binding.registerPasswordErrorMessage,
-                                errorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.password_length_error
+                                ),
                                 activity
                             )
 
@@ -166,7 +204,21 @@ class HelpFunctions(private val mainApp: MainApp) {
                             setErrorView(
                                 binding.registerEmailInput,
                                 binding.registerEmailErrorMessage,
-                                errorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.email_already_in_use
+                                ),
+                                activity
+                            )
+
+                        "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname" ->
+                            setErrorView(
+                                binding.registerPasswordInput,
+                                binding.registerPasswordErrorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.internet_connection_issue
+                                ),
                                 activity
                             )
 
