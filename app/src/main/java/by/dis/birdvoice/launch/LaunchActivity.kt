@@ -29,6 +29,10 @@ class LaunchActivity : BaseActivity() {
 
         binding = ActivityLaunchBinding.inflate(layoutInflater)
 
+        launchVM.title.observe(this) { title ->
+            binding.launchTitle.text = title
+        }
+
         mainApp.setContext(this@LaunchActivity)
 
         launchVM.activityBinding = binding

@@ -22,7 +22,7 @@
     <!--  Errors  -->
     <string name="email_error_valid">Enter valid email</string>
     <string name="this_field_must_be_not_empty">This field must be not empty</string>
-    <string name="password_length_error">Password length should be 8 symbols or more</string>
+    <string name="password_length_error">Password length should be 8 symbols or more (and less than 16)</string>
     <string name="password_letter_error">The password must contain at least one capital letter</string>
     <string name="password_symbol_error">The password must contain at least one special character</string>
     <string name="please_enter_the_code">Please, enter the code</string>

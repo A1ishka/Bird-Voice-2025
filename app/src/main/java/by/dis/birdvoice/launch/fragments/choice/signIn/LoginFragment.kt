@@ -75,7 +75,6 @@ class LoginFragment : BaseLaunchFragment() {
         binding = FragmentLoginBinding.inflate(layoutInflater)
         binding.apply {
             arrayOfViews = arrayListOf(
-                ViewObject(loginWelcomeText),
                 ViewObject(loginBottomLeftCloud, "lc1"),
                 ViewObject(loginBottomRightCloud, "rc2"),
                 ViewObject(loginTopRightCloud, "rc1"),
@@ -97,7 +96,12 @@ class LoginFragment : BaseLaunchFragment() {
         binding.loginEmailInput.filters = helpFunctions.getLoginFilters()
         binding.loginPasswordInput.filters = helpFunctions.getPasswordFilters()
 
-        if (launchVM.boolPopBack) launchVM.showTop()
+        launchVM.setTitle(getString(R.string.welcome_back))
+
+        if (launchVM.boolPopBack) {
+            launchVM.showTopTitle()
+            launchVM.showTop()
+        }
         binding.loginBird.animation.setAnimationListener(helpFunctions.createAnimationEndListener {
             launchVM.setArrowAction {
                 navigationBackAction {
@@ -105,6 +109,7 @@ class LoginFragment : BaseLaunchFragment() {
                         activityLaunch.getApp().getContext(),
                         arrayOfViews
                     )
+                    launchVM.hideTopTitle()
                     launchVM.hideTop()
                     errorViewOut(checkLogin = true, checkPassword = true)
                 }

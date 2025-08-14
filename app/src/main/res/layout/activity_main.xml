@@ -22,14 +22,32 @@
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            app:titleTextColor="@color/primary_blue"
-
             android:background="@color/primary_background_white"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:ellipsize="none"
+                android:scrollHorizontally="false"
+                android:paddingEnd="30dp"
+
+                android:singleLine="false"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="2"
+
+                android:textColor="@color/primary_blue"
+                android:textSize="22sp"
+                android:textStyle="bold"
+
+                android:gravity="center_vertical"
+                tools:text=""
+                tools:ignore="RtlSymmetry" />
+        </androidx.appcompat.widget.Toolbar>
 
         <ImageButton
             android:id="@+id/main_toolbar_upload_ic"

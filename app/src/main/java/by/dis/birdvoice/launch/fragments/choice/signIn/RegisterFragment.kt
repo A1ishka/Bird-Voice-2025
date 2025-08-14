@@ -80,7 +80,6 @@ class RegisterFragment : BaseLaunchFragment() {
                 ViewObject(registerTopRightCloud, "rc1"),
                 ViewObject(registerBottomRightCloud, "rc2"),
                 ViewObject(registerGoogleClickable),
-                ViewObject(registerNewAccountText),
                 ViewObject(registerEmailTitle),
                 ViewObject(registerEmailInput),
                 ViewObject(registerPasswordTitle),
@@ -99,7 +98,10 @@ class RegisterFragment : BaseLaunchFragment() {
         animationUtils.commonDefineObjectsVisibility(arrayOfViews)
         animationUtils.commonObjectAppear(activityLaunch.getApp().getContext(), arrayOfViews, true)
 
+        launchVM.setTitle(getString(R.string.new_account))
+
         if (launchVM.boolPopBack) {
+            launchVM.showTopTitle()
             launchVM.showTop()
         }
         binding.registerBird.animation.setAnimationListener(helpFunctions.createAnimationEndListener {
@@ -109,6 +111,7 @@ class RegisterFragment : BaseLaunchFragment() {
                         activityLaunch.getApp().getContext(),
                         arrayOfViews
                     )
+                    launchVM.hideTopTitle()
                     launchVM.hideTop()
                     errorViewOut(checkEmail = true, checkPassword = true)
                 }

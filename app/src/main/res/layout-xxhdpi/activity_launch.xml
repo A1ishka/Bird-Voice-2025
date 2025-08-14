@@ -23,11 +23,33 @@
 
         android:clickable="false"
 
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
-        android:padding="8dp"
+        android:padding="4dp"
 
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/launch_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:visibility="invisible"
+
+        android:singleLine="false"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+
+        android:fontFamily="@font/roboto"
+        android:text="@string/welcome_back"
+        android:textColor="@color/primary_blue"
+        android:textStyle="bold"
+        android:textSize="22sp"
+
+        app:layout_constraintStart_toEndOf="@+id/launcher_arrow_back"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -41,11 +42,11 @@ class MainVM : ViewModel() {
     }
 
     fun setToolbarTitleObserver(
-        toolbar: androidx.appcompat.widget.Toolbar,
+        toolbarTitleView: TextView,
         activity: MainActivity
     ) {
         toolbarTitle.observe(activity) {
-            toolbar.title = it
+            toolbarTitleView.text = it
         }
     }
 
