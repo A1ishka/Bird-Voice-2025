@@ -68,27 +68,8 @@
             android:src="@drawable/login_bird"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_welcome_text"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            android:id="@+id/login_welcome_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:paddingHorizontal="8dp"
-
-            android:fontFamily="@font/roboto"
-            android:text="@string/welcome_back"
-            android:textColor="@color/primary_blue"
-            android:textStyle="bold"
-            android:textSize="48sp"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/login_google_clickable"
@@ -249,19 +230,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:paddingHorizontal="24dp"
             android:layout_marginTop="4dp"
             android:elevation="6dp"
             android:fontFamily="@font/roboto"
 
             android:textColor="@color/primary_red"
-
             android:textSize="14sp"
-
+            android:paddingEnd="24dp"
+            tools:ignore="RtlSymmetry"
             android:visibility="invisible"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/login_password_input"
             app:layout_constraintTop_toBottomOf="@id/login_password_input" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
