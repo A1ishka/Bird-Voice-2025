@@ -59,42 +59,48 @@ object RecognitionClient {
 
         recognitionClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                onFailure(e.message.toString())
+                try {
+                    onFailure(e.message.toString())
+                } catch (e: IOException) {
+                    Log.d("Failure error message", e.message.toString())
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val responseBody = response.body?.string()
-                val midString = responseBody?.substring(1, responseBody.length - 1)
-                val finalString = (midString?.let { decodeUnicode(it) })?.replace("\\", "")
-                Log.d("FINAL STRING RESPONSE", finalString.toString())
+                val raw = response.body?.string()
+                val mid = raw?.substring(1, raw.length - 1)
+                val finalString = mid?.let { decodeUnicode(it) }?.replace("\\", "")
+                Log.d("Error message", finalString.toString())
 
                 try {
-                    if ((finalString?.isEmpty()) != false) {
+                    if (finalString.isNullOrBlank() || finalString == "{}") {
                         onFailure("Birds were not recognized")
+                        return
                     }
 
-                    val jObject = finalString?.let { JSONObject(it) }
-                    val keys = jObject?.keys()
+                    val jObject = JSONObject(finalString)
+                    val keys = jObject.keys()
 
                     val arrayOfResults = arrayListOf<RecognizedBird>()
-                    while (keys?.hasNext() == true) {
+                    while (keys.hasNext()) {
                         val key = keys.next()
                         val birdInfoArray = jObject.getString(key)
 
-                        val recognizedBird = RecognizedBird(
-                            image = birdInfoArray,
-                            name = key
-                        )
-
-                        if (recognizedBird.name != "unknown" && recognizedBird.name != "background")
+                        val recognizedBird = RecognizedBird(image = birdInfoArray, name = key)
+                        if (recognizedBird.name != "unknown" && recognizedBird.name != "background") {
                             arrayOfResults.add(recognizedBird)
+                        }
+                    }
+
+                    if (arrayOfResults.isEmpty()) {
+                        onFailure("Birds were not recognized")
+                        return
                     }
 
                     onSuccess(arrayOfResults)
 
                 } catch (e: JSONException) {
-                    e.printStackTrace()
-                    onFailure(e.message.toString())
+                    onFailure(e.message ?: "Parse error")
                 }
             }
         })

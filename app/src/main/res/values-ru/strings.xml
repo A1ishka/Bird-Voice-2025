@@ -28,9 +28,12 @@
     <string name="please_enter_the_code">Пожалуйста, введите код</string>
     <string name="space_is_not_allowed">Пробел здесь недопустим</string>
     <string name="internet_connection_issue">Проверьте соединение с интернетом</string>
-    <string name="birds_were_not_recognized">Птицы не были распознаны</string>
     <string name="login_or_password_issue">Неверный логин или пароль</string>
     <string name="email_already_in_use">Почта уже используется</string>
+
+    <string name="no_birds_found">Птицы не распознаны</string>
+    <string name="no_birds_hint">Попробуйте записать звук подольше или ближе к источнику. Избегайте шумов ветра и людей.</string>
+    <string name="try_again">Повторить распознавание</string>
 
     <!--  Register  -->
     <string name="telephone_number">Номер телефона</string>

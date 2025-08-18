@@ -28,9 +28,12 @@
     <string name="please_enter_the_code">Please, enter the code</string>
     <string name="space_is_not_allowed">Space is not allowed here</string>
     <string name="internet_connection_issue">Check your internet connection</string>
-    <string name="birds_were_not_recognized">Birds were not recognized</string>
     <string name="login_or_password_issue">Invalid login or password</string>
     <string name="email_already_in_use">Email already in use</string>
+
+    <string name="no_birds_found">Birds are not recognised</string>
+    <string name="no_birds_hint">Try recording the sound longer or closer to its source. Avoid wind and people noise.</string>
+    <string name="try_again">Repeat recognition</string>
 
     <!--  Register  -->
     <string name="telephone_number">Telephone number</string>

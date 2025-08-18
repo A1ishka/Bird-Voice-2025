@@ -2,6 +2,7 @@ package by.dis.birdvoice.main.fragments.recognition.recognition
 
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -125,6 +126,8 @@ class Recognition1Fragment : BaseMainFragment() {
                 it.close()
             }
 
+            mainVM.clearResults()
+
             RecognitionClient.sendToDatabase(
                 file,
                 activityMain.getEmail(),
@@ -136,13 +139,26 @@ class Recognition1Fragment : BaseMainFragment() {
                 },
                 { string ->
                     if (string == "Birds were not recognized") {
+                        mainVM.clearResults()
                         activityMain.runOnUiThread {
                             Toast.makeText(
                                 activityMain,
-                                getString(R.string.birds_were_not_recognized),
+                                getString(R.string.no_birds_found),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+                    } else if (string.contains("Unable to resolve")) {
+                        Log.d("Shut up check", "111111111111111111111111111111111111")
+                        activityMain.runOnUiThread {
+                            Toast.makeText(
+                                activityMain,
+                                getString(R.string.internet_connection_issue),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        Log.d("Shut up check", "111111111111111122222222222222222222")
+                        goBack()
+                        Log.d("Shut up check", "111111111111111111113333333333333333")
                     } else {
                         activityMain.runOnUiThread {
                             Toast.makeText(
@@ -165,7 +181,8 @@ class Recognition1Fragment : BaseMainFragment() {
                         mainVM.setList(list)
                         navigateAction()
                     }) { string ->
-                    if (string == "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname") {
+                    if (string.contains("Unable to resolve")) {
+                        Log.d("Shut up check", "222222222222222222222222222222222222")
                         activityMain.runOnUiThread {
                             Toast.makeText(
                                 activityMain,
@@ -173,6 +190,7 @@ class Recognition1Fragment : BaseMainFragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+                        Log.d("Shut up check", "222222222222222222222111111111111111")
                     } else {
                         activityMain.runOnUiThread {
                             Toast.makeText(
@@ -182,9 +200,20 @@ class Recognition1Fragment : BaseMainFragment() {
                             ).show()
                         }
                     }
-                    navigateAction()
+                    goBack()
+
+                    Log.d("Shut up check", "222222222222222222223333333333333333")
+//                    navigateAction()
                 }
             }
+        }
+    }
+
+    private fun goBack() {
+        goNext = false
+        scope.launch {
+            delay(500)
+            popBackAction()
         }
     }
 
