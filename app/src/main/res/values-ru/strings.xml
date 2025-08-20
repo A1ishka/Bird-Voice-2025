@@ -30,6 +30,7 @@
     <string name="internet_connection_issue">Проверьте соединение с интернетом</string>
     <string name="login_or_password_issue">Неверный логин или пароль</string>
     <string name="email_already_in_use">Почта уже используется</string>
+    <string name="no_audio_selected">Аудиозапись не выбрана</string>
 
     <string name="no_birds_found">Птицы не распознаны</string>
     <string name="no_birds_hint">Попробуйте записать звук подольше или ближе к источнику. Избегайте шумов ветра и людей.</string>

@@ -1,14 +1,18 @@
 package by.dis.birdvoice.main.fragments.recognition.recognition
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import by.dis.birdvoice.R
 import by.dis.birdvoice.client.recognition.RecognitionClient
 import by.dis.birdvoice.databinding.FragmentRecognition1Binding
@@ -20,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class Recognition1Fragment : BaseMainFragment() {
@@ -114,106 +119,115 @@ class Recognition1Fragment : BaseMainFragment() {
     }
 
     private fun recognizeAudio() {
-        if (isAudioPicked) {
-            val inputStream =
-                mainVM.getUri()?.let { activityMain.contentResolver.openInputStream(it) }
-            val file = File(
-                activityMain.getExternalFilesDir(Environment.DIRECTORY_DCIM),
-                "bird_voice_recognition_temp_file.mp3"
-            )
-            file.outputStream().use {
-                it.write(inputStream?.readBytes())
-                it.close()
-            }
+        if (!isNetworkAvailable()) {
+            Toast.makeText(requireContext(), R.string.internet_connection_issue, Toast.LENGTH_SHORT)
+                .show()
+            goBackSafe()
+            return
+        }
 
-            mainVM.clearResults()
+        viewLifecycleOwner.lifecycleScope.launch {
+            var tempFile: File? = null
+            try {
+                val audioFile: File = if (isAudioPicked) {
 
-            RecognitionClient.sendToDatabase(
-                file,
-                activityMain.getEmail(),
-                activityMain.getApp().getLocaleInt(),
-                { list ->
-                    mainVM.setList(list)
-                    file.delete()
-                    navigateAction()
-                },
-                { string ->
-                    if (string == "Birds were not recognized") {
-                        mainVM.clearResults()
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                getString(R.string.no_birds_found),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else if (string.contains("Unable to resolve")) {
-                        Log.d("Shut up check", "111111111111111111111111111111111111")
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                getString(R.string.internet_connection_issue),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        Log.d("Shut up check", "111111111111111122222222222222222222")
-                        goBack()
-                        Log.d("Shut up check", "111111111111111111113333333333333333")
-                    } else {
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                string,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        file.delete()
-                        navigateAction()
+                    val uri = mainVM.getUri()
+                    val inputStream = uri?.let { activityMain.contentResolver.openInputStream(it) }
+                    if (inputStream == null) {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.no_audio_selected), Toast.LENGTH_SHORT
+                        ).show()
+                        goBackSafe()
+                        return@launch
                     }
-                })
-        } else {
-            mainVM.getAudioFile()?.let {
-                RecognitionClient.sendToDatabase(
-                    it,
-                    activityMain.getEmail(),
-                    activityMain.getApp().getLocaleInt(),
-                    { list ->
-                        mainVM.setList(list)
-                        navigateAction()
-                    }) { string ->
-                    if (string.contains("Unable to resolve")) {
-                        Log.d("Shut up check", "222222222222222222222222222222222222")
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                getString(R.string.internet_connection_issue),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        Log.d("Shut up check", "222222222222222222222111111111111111")
-                    } else {
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                string,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    withContext(Dispatchers.IO) {
+                        val recordedAudio = File(
+                            activityMain.getExternalFilesDir(Environment.DIRECTORY_DCIM),
+                            "bird_voice_recognition_temp_file.mp3"
+                        )
+                        recordedAudio.outputStream().use { out -> inputStream.use { inp -> inp.copyTo(out) } }
+                        tempFile = recordedAudio
+                        recordedAudio
                     }
-                    goBack()
-
-                    Log.d("Shut up check", "222222222222222222223333333333333333")
-//                    navigateAction()
+                } else {
+                    mainVM.getAudioFile() ?: run {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.no_audio_selected),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        goBackSafe()
+                        return@launch
+                    }
                 }
+
+                mainVM.clearResults()
+
+                RecognitionClient.sendToDatabase(
+                    audioFile = audioFile,
+                    email = activityMain.getEmail(),
+                    language = activityMain.getApp().getLocaleInt(),
+                    uiScope = viewLifecycleOwner.lifecycleScope,
+                    onSuccess = { list ->
+                        mainVM.setList(list)
+                        tempFile?.delete()
+                        navigateAction()
+                    },
+                    onFailure = { msg ->
+                        when {
+                            msg.equals("Birds were not recognized", ignoreCase = true) -> {
+                                mainVM.clearResults()
+                                Toast.makeText(
+                                    requireContext(),
+                                    R.string.no_birds_found,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navigateAction()
+                            }
+
+                            msg.contains("unable to resolve", true) ||
+                                    msg.contains("connect", true) ||
+                                    msg.contains("timeout", true) -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    R.string.internet_connection_issue,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                goBackSafe()
+                            }
+
+                            else -> {
+                                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                                goBackSafe()
+                            }
+                        }
+                        tempFile?.delete()
+                    }
+                )
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), e.message ?: "Error", Toast.LENGTH_SHORT).show()
+                tempFile?.delete()
+                goBackSafe()
             }
         }
     }
 
-    private fun goBack() {
-        goNext = false
-        scope.launch {
-            delay(500)
-            popBackAction()
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = activityMain.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw = connectivityManager.activeNetwork ?: return false
+        val caps = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    private fun goBackSafe() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main.immediate) {
+            runCatching {
+                val nav = findNavController()
+                if (nav.currentDestination != null) {
+                    nav.popBackStack()
+                }
+            }
         }
     }
 

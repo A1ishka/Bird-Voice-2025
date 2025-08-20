@@ -1,7 +1,9 @@
 package by.dis.birdvoice.client.recognition
 
-import android.util.Log
 import by.dis.birdvoice.db.objects.RecognizedBird
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,38 +16,38 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import java.net.ConnectException
+import java.net.NoRouteToHostException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
+import javax.net.ssl.SSLException
 
 object RecognitionClient {
 
-    private var recognitionClient = OkHttpClient.Builder()
+    private val recognitionClient = OkHttpClient.Builder()
         .callTimeout(3, TimeUnit.MINUTES)
         .connectTimeout(3, TimeUnit.MINUTES)
         .readTimeout(3, TimeUnit.MINUTES)
         .writeTimeout(3, TimeUnit.MINUTES)
+        .retryOnConnectionFailure(false)
         .build()
 
     fun sendToDatabase(
         audioFile: File,
         email: String,
         language: Int,
+        uiScope: CoroutineScope,
         onSuccess: (ArrayList<RecognizedBird>) -> Unit,
         onFailure: (String) -> Unit
     ) {
-        val username = try {
-            email.substringBefore("@")
-        } catch (e: NumberFormatException) {
-            Log.d("sendToDatabase NumberFormatException", e.message.toString())
-        } ?: " "
-
-        val audioType = audioFile.extension
-
+        val username = runCatching { email.substringBefore("@") }.getOrNull() ?: " "
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
                 "audio_to_recognize",
-                "$username audio.$audioType",
+                "$username audio.${audioFile.extension}",
                 audioFile.asRequestBody("audio/mpeg".toMediaType())
             )
             .addFormDataPart("email", email)
@@ -59,67 +61,89 @@ object RecognitionClient {
 
         recognitionClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                try {
-                    onFailure(e.message.toString())
-                } catch (e: IOException) {
-                    Log.d("Failure error message", e.message.toString())
-                }
+                val msg = mapError(e)
+                uiScope.launch(Dispatchers.Main) { onFailure(msg) }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val raw = response.body?.string()
-                val mid = raw?.substring(1, raw.length - 1)
-                val finalString = mid?.let { decodeUnicode(it) }?.replace("\\", "")
-                Log.d("Error message", finalString.toString())
+                response.use { resp ->
+                    try {
+                        if (!resp.isSuccessful) {
+                            uiScope.launch(Dispatchers.Main) {
+                                onFailure("HTTP ${resp.code}")
+                            }
+                            return
+                        }
 
-                try {
-                    if (finalString.isNullOrBlank() || finalString == "{}") {
-                        onFailure("Birds were not recognized")
-                        return
-                    }
+                        val raw = resp.body?.string().orEmpty().trim()
+                        val dequoted = if (raw.length >= 2 &&
+                            ((raw.first() == '"' && raw.last() == '"') ||
+                                    (raw.first() == '\'' && raw.last() == '\''))) {
+                            raw.substring(1, raw.length - 1)
+                        } else raw
 
-                    val jObject = JSONObject(finalString)
-                    val keys = jObject.keys()
+                        val finalString = decodeUnicode(dequoted).replace("\\", "")
 
-                    val arrayOfResults = arrayListOf<RecognizedBird>()
-                    while (keys.hasNext()) {
-                        val key = keys.next()
-                        val birdInfoArray = jObject.getString(key)
+                        if (finalString.isBlank() || finalString == "{}") {
+                            uiScope.launch(Dispatchers.Main) {
+                                onFailure("Birds were not recognized")
+                            }
+                            return
+                        }
 
-                        val recognizedBird = RecognizedBird(image = birdInfoArray, name = key)
-                        if (recognizedBird.name != "unknown" && recognizedBird.name != "background") {
-                            arrayOfResults.add(recognizedBird)
+                        val jObject = JSONObject(finalString)
+                        val results = arrayListOf<RecognizedBird>()
+                        val keys = jObject.keys()
+                        while (keys.hasNext()) {
+                            val key = keys.next()
+                            val valStr = jObject.getString(key)
+                            val recognizedBird = RecognizedBird(image = valStr, name = key)
+                            if (recognizedBird.name != "unknown" && recognizedBird.name != "background") {
+                                results.add(recognizedBird)
+                            }
+                        }
+                        if (results.isEmpty()) {
+                            uiScope.launch(Dispatchers.Main) {
+                                onFailure("Birds were not recognized")
+                            }
+                            return
+                        }
+
+                        uiScope.launch(Dispatchers.Main) { onSuccess(results) }
+
+                    } catch (e: JSONException) {
+                        uiScope.launch(Dispatchers.Main) {
+                            onFailure(e.message ?: "Parse error")
+                        }
+                    } catch (e: Exception) {
+                        uiScope.launch(Dispatchers.Main) {
+                            onFailure(mapError(e))
                         }
                     }
-
-                    if (arrayOfResults.isEmpty()) {
-                        onFailure("Birds were not recognized")
-                        return
-                    }
-
-                    onSuccess(arrayOfResults)
-
-                } catch (e: JSONException) {
-                    onFailure(e.message ?: "Parse error")
                 }
             }
         })
     }
 
+    private fun mapError(e: Throwable): String = when (e) {
+        is UnknownHostException,
+        is ConnectException,
+        is NoRouteToHostException,
+        is SSLException,
+        is SocketTimeoutException -> "Unable to resolve host or connect"
+        else -> e.message ?: "Request failed"
+    }
+
     private fun decodeUnicode(input: String): String {
         val pattern = Pattern.compile("\\\\u(\\p{XDigit}{4})")
         val matcher = pattern.matcher(input)
-        val buffer = StringBuffer(input.length)
+        val buf = StringBuffer(input.length)
         while (matcher.find()) {
-            val hex = matcher.group(1)
-            val codePoint = hex?.let { Integer.parseInt(it, 16) }
-            matcher.appendReplacement(buffer, "")
-
-            if (codePoint != null) {
-                buffer.appendCodePoint(codePoint)
-            }
+            val code = matcher.group(1)?.let { Integer.parseInt(it, 16) }
+            matcher.appendReplacement(buf, "")
+            if (code != null) buf.appendCodePoint(code)
         }
-        matcher.appendTail(buffer)
-        return buffer.toString()
+        matcher.appendTail(buf)
+        return buf.toString()
     }
 }

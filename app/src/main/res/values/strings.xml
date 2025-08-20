@@ -30,6 +30,7 @@
     <string name="internet_connection_issue">Check your internet connection</string>
     <string name="login_or_password_issue">Invalid login or password</string>
     <string name="email_already_in_use">Email already in use</string>
+    <string name="no_audio_selected">No audio selected</string>
 
     <string name="no_birds_found">Birds are not recognised</string>
     <string name="no_birds_hint">Try recording the sound longer or closer to its source. Avoid wind and people noise.</string>
