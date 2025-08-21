@@ -22,14 +22,17 @@
     <!--  Errors  -->
     <string name="email_error_valid">Enter valid email</string>
     <string name="this_field_must_be_not_empty">This field must be not empty</string>
+    <string name="login_or_password_issue">Invalid login or password</string>
+    <string name="email_already_in_use">Email already in use</string>
+
     <string name="password_length_error">Password length should be 8 symbols or more (and less than 16)</string>
     <string name="password_letter_error">The password must contain at least one capital letter</string>
     <string name="password_symbol_error">The password must contain at least one special character</string>
     <string name="please_enter_the_code">Please, enter the code</string>
     <string name="space_is_not_allowed">Space is not allowed here</string>
+
     <string name="internet_connection_issue">Check your internet connection</string>
-    <string name="login_or_password_issue">Invalid login or password</string>
-    <string name="email_already_in_use">Email already in use</string>
+    <string name="no_internet_connection">No Internet Connection</string>
     <string name="no_audio_selected">No audio selected</string>
 
     <string name="no_birds_found">Birds are not recognised</string>

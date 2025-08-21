@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    tools:context=".launch.LaunchActivity"
-    tools:ignore="ContentDescription"
-    android:background="@color/primary_background_white"
+    android:id="@+id/launch_group"
 
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary_background_white"
+
+    tools:context=".launch.LaunchActivity"
+    tools:ignore="ContentDescription">
 
     <ImageButton
         android:id="@+id/launcher_arrow_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/ic_arrow_back"
+        android:layout_marginStart="16dp"
 
+        android:layout_marginTop="8dp"
         android:background="@drawable/ripple_rounded"
-        android:visibility="invisible"
 
         android:clickable="false"
 
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
         android:padding="4dp"
+        android:src="@drawable/ic_arrow_back"
+        android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,35 +36,67 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp"
-        android:visibility="invisible"
-
-        android:singleLine="false"
+        android:fontFamily="@font/roboto"
         android:lineSpacingExtra="2dp"
         android:maxLines="2"
 
-        android:fontFamily="@font/roboto"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:singleLine="false"
+
         android:text="@string/welcome_back"
         android:textColor="@color/primary_blue"
-        android:textStyle="bold"
         android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="gone"
 
         app:layout_constraintStart_toEndOf="@+id/launcher_arrow_back"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/launcher_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/offline_banner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
 
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/launcher_graph"
+        app:cardBackgroundColor="@color/primary_error_red"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
 
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/launcher_arrow_back"/>
+        app:layout_constraintTop_toBottomOf="@id/launcher_arrow_back">
+
+        <TextView
+            android:id="@+id/offline_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+
+            android:singleLine="false"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="2"
+            android:textAlignment="center"
+
+            android:text="@string/no_internet_connection"
+            android:textColor="@color/primary_text_white"
+            android:textSize="14sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/launcher_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/offline_banner"
+        app:navGraph="@navigation/launcher_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

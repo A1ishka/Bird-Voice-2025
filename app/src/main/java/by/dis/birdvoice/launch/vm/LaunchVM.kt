@@ -39,7 +39,7 @@ class LaunchVM : ViewModel() {
             AnimationUtils.loadAnimation(mainApp.getContext(), R.anim.common_left_obj_out)
         activityBinding?.apply {
             launchTitle.startAnimation(titleAnim)
-            launchTitle.visibility = View.INVISIBLE
+            launchTitle.visibility = View.GONE
         }
     }
 
@@ -66,7 +66,7 @@ class LaunchVM : ViewModel() {
             AnimationUtils.loadAnimation(mainApp.getContext(), R.anim.common_left_obj_out)
         activityBinding?.apply {
             launcherArrowBack.startAnimation(arrowAnim)
-            launcherArrowBack.visibility = View.INVISIBLE
+            launcherArrowBack.visibility = View.GONE
         }
     }
 

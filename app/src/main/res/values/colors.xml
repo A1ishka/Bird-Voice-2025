@@ -15,8 +15,10 @@
     <color name="primary_footer_blue">#286FE4</color>
     <color name="primary_text_blue">#0047CA</color>
     <color name="primary_white">#DAEDFF</color>
+    <color name="primary_text_white">#F0E4E4</color>
     <color name="primary_background_white">#F0F0F3</color>
     <color name="primary_red">#ED033B</color>
+    <color name="primary_error_red">#B40721</color>
     <color name="primary_button_push">#99C7C7EA</color>
     <color name="primary_concave_background">#F2F3F7</color>
     <color name="primary_tabs_unactivated">#E5E6EC</color>
