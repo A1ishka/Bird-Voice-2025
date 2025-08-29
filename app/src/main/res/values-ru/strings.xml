@@ -49,7 +49,7 @@
     <string name="additional_information">Дополнительная информация</string>
     <string name="first_name">Имя</string>
     <string name="last_name">Фамилия</string>
-    <string name="model_isnt_loaded">Языковая модель ещё загружена</string>
+    <string name="model_isnt_loaded">Языковая модель ещё не загружена</string>
 
     <!--  Inform page  -->
     <string name="inform_rv_item_1_description">Наш сервис, благодаря новой уникальной технологии, помогает распознавать и определять по звукам, воспроизводимым той или иной птицей, ее название, вид, семейство, среду обитания.</string>

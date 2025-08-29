@@ -28,7 +28,6 @@
             android:layout_height="wrap_content"
 
             android:background="@drawable/ic_concave_data_holder_small"
-
             android:layout_marginTop="10dp"
 
             app:layout_constraintTop_toTopOf="parent"
@@ -90,7 +89,6 @@
             android:layout_height="wrap_content"
 
             android:background="@drawable/ic_concave_data_holder_big"
-
             android:layout_marginVertical="12dp"
             android:layout_marginHorizontal="12dp"
 
@@ -116,7 +114,6 @@
                 android:layout_height="20dp"
 
                 android:layout_marginStart="12dp"
-
                 android:background="@drawable/rv_item_shape_1"
                 android:elevation="4dp"
 
@@ -163,7 +160,6 @@
             android:layout_height="wrap_content"
 
             android:background="@drawable/ic_concave_data_holder_small"
-
             android:layout_marginTop="10dp"
 
             app:layout_constraintTop_toTopOf="parent"
@@ -255,7 +251,6 @@
         android:background="@color/primary_concave_background"
         android:elevation="8dp"
 
-
         app:layout_constraintTop_toBottomOf="@id/edit_rec_concave_wave_holder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -289,7 +284,6 @@
             android:textColor="@color/primary_blue"
 
             android:layout_marginEnd="4dp"
-
             android:layout_marginHorizontal="4dp"
 
             app:layout_constraintEnd_toStartOf="@id/edit_rec_audio_progress"
@@ -307,8 +301,8 @@
 
             android:src="@drawable/ic_download_button"
             android:background="@drawable/ripple_rounded"
-            android:elevation="4dp"
 
+            android:elevation="4dp"
             android:layout_marginEnd="4dp"
 
             app:layout_constraintEnd_toEndOf="parent"
@@ -336,11 +330,10 @@
             android:text="@string/edit_rec_start"
             android:textSize="16sp"
 
-            android:layout_marginHorizontal="24dp"
-
             app:cornerRadius="32dp"
             android:clickable="false"
 
+            android:layout_marginHorizontal="24dp"
             app:layout_constraintVertical_bias="0.65"
 
             app:layout_constraintStart_toStartOf="parent"

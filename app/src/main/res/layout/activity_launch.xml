@@ -17,16 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginStart="16dp"
-
-        android:layout_marginTop="8dp"
         android:background="@drawable/ripple_rounded"
-
-        android:clickable="false"
-
-        android:padding="4dp"
         android:src="@drawable/ic_arrow_back"
         android:visibility="gone"
+        android:clickable="false"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:padding="4dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,15 +38,15 @@
         android:lineSpacingExtra="2dp"
         android:maxLines="2"
 
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp"
-        android:singleLine="false"
-
         android:text="@string/welcome_back"
         android:textColor="@color/primary_blue"
         android:textSize="22sp"
         android:textStyle="bold"
         android:visibility="gone"
+
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:singleLine="false"
 
         app:layout_constraintStart_toEndOf="@+id/launcher_arrow_back"
         app:layout_constraintTop_toTopOf="parent" />
