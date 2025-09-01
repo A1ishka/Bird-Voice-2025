@@ -66,14 +66,13 @@
         android:text="@string/new_account"
         android:textSize="16sp"
 
-        android:clickable="false"
-
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="30dp"
 
         app:icon="@drawable/ic_bird"
         app:iconSize="22dp"
 
+        android:clickable="false"
         app:cornerRadius="32dp"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -90,14 +89,13 @@
         android:text="@string/log_in"
         android:textSize="16sp"
 
-        android:clickable="false"
-
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="4dp"
 
         app:icon="@drawable/ic_birdhouse"
         app:iconSize="22dp"
 
+        android:clickable="false"
         app:cornerRadius="32dp"
 
         app:layout_constraintStart_toStartOf="parent"

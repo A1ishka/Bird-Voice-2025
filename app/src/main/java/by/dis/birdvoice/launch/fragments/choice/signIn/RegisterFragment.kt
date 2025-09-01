@@ -8,14 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import by.dis.birdvoice.R
 import by.dis.birdvoice.client.loginization.LoginClient
 import by.dis.birdvoice.client.loginization.RegistrationClient
 import by.dis.birdvoice.databinding.FragmentRegisterBinding
+import by.dis.birdvoice.helpers.utils.CustomToast
 import by.dis.birdvoice.helpers.utils.FIREBASE_CLIENT_ID
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.launch.fragments.BaseLaunchFragment
@@ -26,10 +27,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicBoolean
 
 class RegisterFragment : BaseLaunchFragment() {
+
+    private val registerOnce = AtomicBoolean(false)
 
     private lateinit var binding: FragmentRegisterBinding
     override lateinit var arrayOfViews: ArrayList<ViewObject>
@@ -49,19 +55,16 @@ class RegisterFragment : BaseLaunchFragment() {
                     try {
                         val account = task.getResult(ApiException::class.java)!!
                         firebaseAuthWithGoogle(account.idToken!!)
-
                         createUserInCommonDB(account)
                     } catch (e: ApiException) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Google sign in failed: ${e.localizedMessage}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                     }
                 } else {
-                    Log.d("GoogleSignIn", "Result code: ${result.resultCode}, Intent: ${result.data}")
-                    Toast.makeText(requireContext(), "Google sign-in cancelled", Toast.LENGTH_SHORT)
-                        .show()
+                    Log.d(
+                        "GoogleSignIn",
+                        "Result code: ${result.resultCode}, Intent: ${result.data}"
+                    )
+                    CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                 }
             }
 
@@ -80,7 +83,6 @@ class RegisterFragment : BaseLaunchFragment() {
                 ViewObject(registerTopRightCloud, "rc1"),
                 ViewObject(registerBottomRightCloud, "rc2"),
                 ViewObject(registerGoogleClickable),
-                ViewObject(registerNewAccountText),
                 ViewObject(registerEmailTitle),
                 ViewObject(registerEmailInput),
                 ViewObject(registerPasswordTitle),
@@ -99,7 +101,10 @@ class RegisterFragment : BaseLaunchFragment() {
         animationUtils.commonDefineObjectsVisibility(arrayOfViews)
         animationUtils.commonObjectAppear(activityLaunch.getApp().getContext(), arrayOfViews, true)
 
+        launchVM.setTitle(getString(R.string.new_account))
+
         if (launchVM.boolPopBack) {
+            launchVM.showTopTitle()
             launchVM.showTop()
         }
         binding.registerBird.animation.setAnimationListener(helpFunctions.createAnimationEndListener {
@@ -109,6 +114,7 @@ class RegisterFragment : BaseLaunchFragment() {
                         activityLaunch.getApp().getContext(),
                         arrayOfViews
                     )
+                    launchVM.hideTopTitle()
                     launchVM.hideTop()
                     errorViewOut(checkEmail = true, checkPassword = true)
                 }
@@ -116,55 +122,61 @@ class RegisterFragment : BaseLaunchFragment() {
 
             binding.registerGoogleClickable.setOnClickListener {
                 val signInIntent = googleSignInClient.signInIntent
+                signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 googleSignInLauncher.launch(signInIntent)
             }
 
             binding.registerCreateButton.setOnClickListener {
+                if (!registerOnce.compareAndSet(false, true)) return@setOnClickListener
+
                 checkRegister {
                     RegistrationClient.post(
                         binding.registerEmailInput.text.toString(),
                         binding.registerPasswordInput.text.toString(),
                         {
-                            //OnSuccess
                             LoginClient.post(
                                 binding.registerEmailInput.text.toString(),
                                 binding.registerPasswordInput.text.toString(),
-                                { access, refresh, email, id ->
-                                    launchVM.getScope().launch {
-                                        delay(200)
-                                        binding.registerCreateButton.isClickable = false
-                                        launchVM.activityBinding?.launcherArrowBack?.isClickable =
-                                            false
-                                        animationUtils.commonObjectAppear(
-                                            activityLaunch.getApp().getContext(), arrayOfViews
-                                        )
-                                        activityLaunch.moveToMainActivity(
-                                            recognitionToken = access,
-                                            refreshToken = refresh,
-                                            email = email,
-                                            accountId = id
-                                        )
+                                once4 { access, refresh, email, id ->
+                                    lifecycleScope.launch {
+                                        withContext(Dispatchers.Main) {
+                                            animationUtils.commonObjectAppear(
+                                                activityLaunch.getApp().getContext(), arrayOfViews
+                                            )
+                                            activityLaunch.moveToMainActivity(
+                                                recognitionToken = access,
+                                                refreshToken = refresh,
+                                                email = email,
+                                                accountId = id
+                                            )
+                                        }
                                     }
                                 },
-                                {
-                                    activityLaunch.runOnUiThread {
-                                        Toast.makeText(
-                                            activityLaunch,
-                                            it,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                once1 { error ->
+                                    lifecycleScope.launch(Dispatchers.Main) {
+                                        CustomToast.show(activityLaunch, error)
+                                        registerOnce.set(false)
                                     }
-                                })
-                        },
-                        {
-                            helpFunctions.checkLoginInput(
-                                binding.registerEmailInput,
-                                binding.registerEmailErrorMessage,
-                                it,
-                                activityLaunch,
-                                binding
+                                }
                             )
-                        })
+                        },
+                        { registrationError ->
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                helpFunctions.checkLoginInput(
+                                    binding.registerEmailInput,
+                                    binding.registerEmailErrorMessage,
+                                    registrationError,
+                                    activityLaunch,
+                                    binding
+                                )
+                                registerOnce.set(false)
+                            }
+                        }
+                    )
+                }
+                lifecycleScope.launch {
+                    delay(1500)
+                    registerOnce.set(false)
                 }
             }
         })
@@ -216,7 +228,7 @@ class RegisterFragment : BaseLaunchFragment() {
                         accountId = accountId ?: 0
                     )
                 } else {
-                    Toast.makeText(requireContext(), "Authentication Failed", Toast.LENGTH_SHORT).show()
+                    CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                 }
             }
     }
@@ -285,5 +297,15 @@ class RegisterFragment : BaseLaunchFragment() {
                 "Google account not added in DB", e.localizedMessage?.toString() ?: ""
             )
         }
+    }
+
+    private fun <A, B, C, D> once4(fn: (A, B, C, D) -> Unit): (A, B, C, D) -> Unit {
+        val fired = AtomicBoolean(false)
+        return { a, b, c, d -> if (fired.compareAndSet(false, true)) fn(a, b, c, d) }
+    }
+
+    private fun <T> once1(fn: (T) -> Unit): (T) -> Unit {
+        val fired = AtomicBoolean(false)
+        return { x -> if (fired.compareAndSet(false, true)) fn(x) }
     }
 }

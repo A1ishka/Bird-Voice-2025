@@ -1,16 +1,21 @@
 package by.dis.birdvoice.main.fragments.recognition.recognition
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import by.dis.birdvoice.R
 import by.dis.birdvoice.client.recognition.RecognitionClient
 import by.dis.birdvoice.databinding.FragmentRecognition1Binding
+import by.dis.birdvoice.helpers.utils.CustomToast
 import by.dis.birdvoice.helpers.utils.DialogCommonInitiator
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.main.fragments.BaseMainFragment
@@ -19,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class Recognition1Fragment : BaseMainFragment() {
@@ -113,76 +119,97 @@ class Recognition1Fragment : BaseMainFragment() {
     }
 
     private fun recognizeAudio() {
-        if (isAudioPicked) {
-            val inputStream =
-                mainVM.getUri()?.let { activityMain.contentResolver.openInputStream(it) }
-            val file = File(
-                activityMain.getExternalFilesDir(Environment.DIRECTORY_DCIM),
-                "bird_voice_recognition_temp_file.mp3"
-            )
-            file.outputStream().use {
-                it.write(inputStream?.readBytes())
-                it.close()
-            }
+        if (!isNetworkAvailable()) {
+            CustomToast.show(requireContext(), getString(R.string.internet_connection_issue))
+            goBackSafe()
+            return
+        }
 
-            RecognitionClient.sendToDatabase(
-                file,
-                activityMain.getEmail(),
-                activityMain.getApp().getLocaleInt(),
-                { list ->
-                    mainVM.setList(list)
-                    file.delete()
-                    navigateAction()
-                },
-                { string ->
-                    if (string == "Birds were not recognized") {
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                getString(R.string.birds_were_not_recognized),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                string,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        file.delete()
-                        navigateAction()
+        viewLifecycleOwner.lifecycleScope.launch {
+            var tempFile: File? = null
+            try {
+                val audioFile: File = if (isAudioPicked) {
+
+                    val uri = mainVM.getUri()
+                    val inputStream = uri?.let { activityMain.contentResolver.openInputStream(it) }
+                    if (inputStream == null) {
+                        CustomToast.show(requireContext(), getString(R.string.no_audio_selected))
+                        goBackSafe()
+                        return@launch
                     }
-                })
-        } else {
-            mainVM.getAudioFile()?.let {
+                    withContext(Dispatchers.IO) {
+                        val recordedAudio = File(
+                            activityMain.getExternalFilesDir(Environment.DIRECTORY_DCIM),
+                            "bird_voice_recognition_temp_file.mp3"
+                        )
+                        recordedAudio.outputStream().use { out -> inputStream.use { inp -> inp.copyTo(out) } }
+                        tempFile = recordedAudio
+                        recordedAudio
+                    }
+                } else {
+                    mainVM.getAudioFile() ?: run {
+                        CustomToast.show(requireContext(), getString(R.string.no_audio_selected))
+                        goBackSafe()
+                        return@launch
+                    }
+                }
+
+                mainVM.clearResults()
+
                 RecognitionClient.sendToDatabase(
-                    it,
-                    activityMain.getEmail(),
-                    activityMain.getApp().getLocaleInt(),
-                    { list ->
+                    audioFile = audioFile,
+                    email = activityMain.getEmail(),
+                    language = activityMain.getApp().getLocaleInt(),
+                    uiScope = viewLifecycleOwner.lifecycleScope,
+                    onSuccess = { list ->
                         mainVM.setList(list)
+                        tempFile?.delete()
                         navigateAction()
-                    }) { string ->
-                    if (string == "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname") {
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                getString(R.string.internet_connection_issue),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                    },
+                    onFailure = { msg ->
+                        when {
+                            msg.equals("Birds were not recognized", ignoreCase = true) -> {
+                                mainVM.clearResults()
+                                CustomToast.show(requireContext(), getString(R.string.no_birds_found))
+                                navigateAction()
+                            }
+
+                            msg.contains("unable to resolve", true) ||
+                                    msg.contains("connect", true) ||
+                                    msg.contains("timeout", true) -> {
+                                CustomToast.show(requireContext(), getString(R.string.internet_connection_issue))
+                                goBackSafe()
+                            }
+
+                            else -> {
+                                CustomToast.show(requireContext(), msg)
+                                goBackSafe()
+                            }
                         }
-                    } else {
-                        activityMain.runOnUiThread {
-                            Toast.makeText(
-                                activityMain,
-                                string,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        tempFile?.delete()
                     }
-                    navigateAction()
+                )
+            } catch (e: Exception) {
+                CustomToast.show(requireContext(), e.message ?: "Error")
+                tempFile?.delete()
+                goBackSafe()
+            }
+        }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = activityMain.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw = connectivityManager.activeNetwork ?: return false
+        val caps = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    private fun goBackSafe() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main.immediate) {
+            runCatching {
+                val nav = findNavController()
+                if (nav.currentDestination != null) {
+                    nav.popBackStack()
                 }
             }
         }

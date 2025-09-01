@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
+    android:id="@+id/launch_group"
+
     tools:context=".launch.LaunchActivity"
     tools:ignore="ContentDescription"
     android:background="@color/primary_background_white"
@@ -16,19 +18,72 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
 
-        android:src="@drawable/ic_arrow_back"
-
         android:background="@drawable/ripple_rounded"
-        android:visibility="invisible"
-
+        android:src="@drawable/ic_arrow_back"
+        android:visibility="gone"
         android:clickable="false"
 
-        android:layout_marginTop="12dp"
         android:layout_marginStart="16dp"
-        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="4dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/launch_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:visibility="gone"
+        android:singleLine="false"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+
+        android:fontFamily="@font/roboto"
+        android:text="@string/welcome_back"
+        android:textColor="@color/primary_blue"
+        android:textStyle="bold"
+        android:textSize="28sp"
+
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+
+        app:layout_constraintStart_toEndOf="@+id/launcher_arrow_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/offline_banner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+
+        app:cardBackgroundColor="@color/primary_error_red"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/launcher_arrow_back">
+
+        <TextView
+            android:id="@+id/offline_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+
+            android:singleLine="false"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="2"
+            android:textAlignment="center"
+
+            android:text="@string/no_internet_connection"
+            android:textColor="@color/primary_text_white"
+            android:textSize="24sp" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/launcher_container"
@@ -42,6 +97,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/launcher_arrow_back"/>
+        app:layout_constraintTop_toBottomOf="@id/offline_banner"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

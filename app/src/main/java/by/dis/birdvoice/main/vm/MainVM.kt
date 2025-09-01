@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -41,11 +42,11 @@ class MainVM : ViewModel() {
     }
 
     fun setToolbarTitleObserver(
-        toolbar: androidx.appcompat.widget.Toolbar,
+        toolbarTitleView: TextView,
         activity: MainActivity
     ) {
         toolbarTitle.observe(activity) {
-            toolbar.title = it
+            toolbarTitleView.text = it
         }
     }
 
@@ -270,20 +271,23 @@ class MainVM : ViewModel() {
     }
 
     //Results
-    private var listOfResults: ArrayList<RecognizedBird> = arrayListOf()
-    fun getResults(): ArrayList<RecognizedBird> {
-        val list = arrayListOf<RecognizedBird>()
-        return if (listOfResults.size > 3) {
-            for (i in 0 until 3) list.add(listOfResults[i])
-            list
-        } else listOfResults
-    }
-
-    fun setList(list: ArrayList<RecognizedBird>) {
-        listOfResults = list
-    }
-
     val isCollectionEmptyInt = MutableLiveData<Int>()
 
     fun createMutableLiveInt() = MutableLiveData<Int>()
+
+    private var listOfResults: MutableList<RecognizedBird> = mutableListOf()
+
+    fun getResults(limit: Int = 3): List<RecognizedBird> {
+        val slice = if (listOfResults.size > limit) listOfResults.take(limit) else listOfResults
+        return ArrayList(slice)
+    }
+
+    fun setList(list: List<RecognizedBird>) {
+        listOfResults.clear()
+        listOfResults.addAll(list)
+    }
+
+    fun clearResults() {
+        listOfResults.clear()
+    }
 }

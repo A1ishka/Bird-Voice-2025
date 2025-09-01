@@ -1,6 +1,7 @@
 package by.dis.birdvoice.main.fragments.recognition.recognition
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,23 +14,26 @@ import by.dis.birdvoice.main.rv.Recognition2Adapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
-class  Recognition2Fragment: BaseMainFragment() {
+class Recognition2Fragment : BaseMainFragment() {
 
     private lateinit var binding: FragmentRecognition2Binding
-    private val scope = CoroutineScope(Dispatchers.IO + Job())
     override var arrayOfViews = arrayListOf<ViewObject>()
+
+    private val scope = CoroutineScope(Dispatchers.IO + Job())
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentRecognition2Binding.inflate(inflater, container, false)
 
-        binding = FragmentRecognition2Binding.inflate(layoutInflater)
+        activityMain.setPopBackCallback { mainVM.recognition2Value.value = true }
 
-        activityMain.setPopBackCallback{ mainVM.recognition2Value.value = true }
+        binding.emptyStateButton.setOnClickListener {
+            navigationBackAction { mainVM.recognition2Value.value = true }
+        }
 
         return binding.root
     }
@@ -39,23 +43,44 @@ class  Recognition2Fragment: BaseMainFragment() {
 
         activityMain.showBottomNav()
 
-        scope.launch {
-            binding.recognition2Rv.apply {
-                activityMain.runOnUiThread {
-                    layoutManager = LinearLayoutManager(activityMain.getApp().getContext())
-                    adapter = Recognition2Adapter(
-                        activityMain.getApp().getContext(),
-                        mainVM,
-                        activityMain,
-                        scope
-                    )
-                }
-            }
-        }
+        isEmptyState()
 
         mainVM.setToolbarTitle(resources.getString(R.string.recognition_results))
-        activityMain.setToolbarAction(R.drawable.ic_arrow_back){
+        activityMain.setToolbarAction(R.drawable.ic_arrow_back) {
             navigationBackAction { mainVM.recognition2Value.value = true }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        isEmptyState()
+    }
+
+    private fun isEmptyState() {
+        val results = mainVM.getResults()
+        Log.d("is empty state", results.isEmpty().toString())
+        if (results.isEmpty()) {
+            showEmptyState()
+        } else {
+            showList()
+        }
+    }
+
+    private fun showList() = with(binding) {
+        emptyState.visibility = View.GONE
+        recognition2Rv.visibility = View.VISIBLE
+        recognition2Rv.layoutManager = LinearLayoutManager(requireContext())
+        recognition2Rv.adapter = Recognition2Adapter(
+            requireContext(),
+            mainVM,
+            activityMain,
+            scope
+        )
+    }
+
+    private fun showEmptyState() = with(binding) {
+        recognition2Rv.visibility = View.GONE
+        emptyState.visibility = View.VISIBLE
     }
 }
