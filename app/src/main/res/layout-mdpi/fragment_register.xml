@@ -33,42 +33,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                android:id="@+id/register_new_account_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:paddingHorizontal="8dp"
-
-                android:text="@string/new_account"
-                android:textColor="@color/primary_blue"
-                android:textStyle="bold"
-                android:textSize="28sp"
-                android:fontFamily="@font/roboto"
-
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <TextView
-                android:id="@+id/register_sign_up_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="6dp"
-                android:paddingHorizontal="8dp"
-
-                android:textSize="14sp"
-                android:textColor="@color/primary_blue"
-                android:fontFamily="@font/roboto"
-
-                app:layout_constraintStart_toStartOf="@id/register_new_account_text"
-                app:layout_constraintEnd_toEndOf="@id/register_new_account_text"
-                app:layout_constraintTop_toBottomOf="@id/register_new_account_text"/>
-
-
             <LinearLayout
                 android:id="@+id/register_google_clickable"
                 android:layout_width="match_parent"
@@ -77,15 +41,15 @@
                 android:gravity="center"
                 android:paddingHorizontal="22dp"
                 android:paddingVertical="10dp"
-                android:layout_marginTop="6dp"
                 android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="60dp"
 
                 android:background="@drawable/background_launcher_edittext"
                 android:elevation="4dp"
                 android:clickable="true"
                 android:focusable="true"
 
-                app:layout_constraintTop_toBottomOf="@id/register_top_right_cloud"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -116,7 +80,7 @@
                 android:textSize="14sp"
                 android:fontFamily="@font/roboto"
 
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginHorizontal="24dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +138,7 @@
                 android:textSize="14sp"
                 android:fontFamily="@font/roboto"
 
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginHorizontal="24dp"
 
                 app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +160,9 @@
 
                 android:visibility="invisible"
 
-                android:paddingHorizontal="24dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="12dp"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/register_password_input"/>
 
@@ -310,7 +276,7 @@
                 app:icon="@drawable/ic_bird"
 
                 android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="2dp"
 
                 app:cornerRadius="32dp"
 

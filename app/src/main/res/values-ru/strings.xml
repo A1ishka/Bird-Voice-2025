@@ -22,15 +22,23 @@
     <!--  Errors  -->
     <string name="email_error_valid">Ошибка почты</string>
     <string name="this_field_must_be_not_empty">Это поле не должно быть пустым</string>
-    <string name="password_length_error">Длина пароля должна быть 8 или более символов</string>
+    <string name="login_or_password_issue">Неверный логин или пароль</string>
+    <string name="email_already_in_use">Почта уже используется</string>
+
+    <string name="password_length_error">Длина пароля должна быть 8 или более символов (но меньше 16)</string>
     <string name="password_letter_error">Пароль должен содержать хотя бы одну заглавную букву</string>
     <string name="password_symbol_error">Пароль должен содержать хотя бы один \nспециальный символ</string>
     <string name="please_enter_the_code">Пожалуйста, введите код</string>
     <string name="space_is_not_allowed">Пробел здесь недопустим</string>
+    <string name="google_sign_in_cancelled">Вход через Google не был выполнен</string>
+
     <string name="internet_connection_issue">Проверьте соединение с интернетом</string>
-    <string name="birds_were_not_recognized">Птицы не были распознаны</string>
-    <string name="login_or_password_issue">Неверный логин или пароль</string>
-    <string name="email_already_in_use">Почта уже используется</string>
+    <string name="no_internet_connection">Интернет соединение отсутствует</string>
+    <string name="no_audio_selected">Аудиозапись не выбрана</string>
+
+    <string name="no_birds_found">Птицы не распознаны</string>
+    <string name="no_birds_hint">Попробуйте записать звук подольше или ближе к источнику. Избегайте шумов ветра и людей.</string>
+    <string name="try_again">Повторить распознавание</string>
 
     <!--  Register  -->
     <string name="telephone_number">Номер телефона</string>
@@ -42,7 +50,7 @@
     <string name="additional_information">Дополнительная информация</string>
     <string name="first_name">Имя</string>
     <string name="last_name">Фамилия</string>
-    <string name="model_isnt_loaded">Языковая модель ещё загружена</string>
+    <string name="model_isnt_loaded">Языковая модель ещё не загружена</string>
 
     <!--  Inform page  -->
     <string name="inform_rv_item_1_description">Наш сервис, благодаря новой уникальной технологии, помогает распознавать и определять по звукам, воспроизводимым той или иной птицей, ее название, вид, семейство, среду обитания.</string>

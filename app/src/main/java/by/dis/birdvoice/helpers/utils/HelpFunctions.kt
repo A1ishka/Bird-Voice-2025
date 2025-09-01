@@ -138,8 +138,8 @@ class HelpFunctions(private val mainApp: MainApp) {
         } else if (errorMessage != null) {
             if (binding is FragmentLoginBinding) {
                 activity.runOnUiThread {
-                    when (errorMessage) {
-                        "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname" ->
+                    when {
+                        errorMessage.contains("Unable to resolve host") ->
                             setErrorView(
                                 binding.loginPasswordInput,
                                 binding.loginPasswordErrorMessage,
@@ -149,7 +149,7 @@ class HelpFunctions(private val mainApp: MainApp) {
                                 ),
                                 activity
                             )
-                        "Invalid email or password" -> {
+                        errorMessage == "Invalid email or password" -> {
                             setErrorView(
                                 binding.loginEmailInput,
                                 binding.loginEmailErrorMessage,
@@ -188,8 +188,19 @@ class HelpFunctions(private val mainApp: MainApp) {
                 }
             } else if (binding is FragmentRegisterBinding) {
                 activity.runOnUiThread {
-                    when (errorMessage) {
-                        "Password should be at least 8 characters" ->
+                    when {
+                        errorMessage.contains("Unable to resolve host") ->
+                            setErrorView(
+                                binding.registerPasswordInput,
+                                binding.registerPasswordErrorMessage,
+                                ContextCompat.getString(
+                                    activity,
+                                    R.string.internet_connection_issue
+                                ),
+                                activity
+                            )
+
+                        errorMessage == "Password should be at least 8 characters" ->
                             setErrorView(
                                 binding.registerPasswordInput,
                                 binding.registerPasswordErrorMessage,
@@ -200,24 +211,13 @@ class HelpFunctions(private val mainApp: MainApp) {
                                 activity
                             )
 
-                        "Email already in use" ->
+                        errorMessage == "Email already in use" ->
                             setErrorView(
                                 binding.registerEmailInput,
                                 binding.registerEmailErrorMessage,
                                 ContextCompat.getString(
                                     activity,
                                     R.string.email_already_in_use
-                                ),
-                                activity
-                            )
-
-                        "Unable to resolve host \"birds-sounds-database.intelligent.by\": No address associated with hostname" ->
-                            setErrorView(
-                                binding.registerPasswordInput,
-                                binding.registerPasswordErrorMessage,
-                                ContextCompat.getString(
-                                    activity,
-                                    R.string.internet_connection_issue
                                 ),
                                 activity
                             )

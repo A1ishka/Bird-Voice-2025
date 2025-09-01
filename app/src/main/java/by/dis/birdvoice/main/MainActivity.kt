@@ -79,7 +79,7 @@ class MainActivity : BaseActivity() {
 
             setContentView(root)
             setSupportActionBar(mainToolbar)
-            mainVM.setToolbarTitleObserver(mainToolbar, this@MainActivity)
+            mainVM.setToolbarTitleObserver(binding.toolbarTitle, this@MainActivity)
         }
 
         loginManager = LoginManager(mainApp.getContext())

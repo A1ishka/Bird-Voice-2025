@@ -70,9 +70,7 @@
         android:layout_marginBottom="32dp"
 
         app:icon="@drawable/ic_bird"
-
         android:clickable="false"
-
         app:cornerRadius="32dp"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -92,9 +90,7 @@
         android:layout_marginBottom="8dp"
 
         app:icon="@drawable/ic_birdhouse"
-
         android:clickable="false"
-
         app:cornerRadius="32dp"
 
         app:layout_constraintStart_toStartOf="parent"
