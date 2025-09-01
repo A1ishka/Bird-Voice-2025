@@ -28,6 +28,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
@@ -134,9 +135,6 @@ class RegisterFragment : BaseLaunchFragment() {
             binding.registerCreateButton.setOnClickListener {
                 if (!registerOnce.compareAndSet(false, true)) return@setOnClickListener
 
-                binding.registerCreateButton.isClickable = false
-                launchVM.activityBinding?.launcherArrowBack?.isClickable = false
-
                 checkRegister {
                     RegistrationClient.post(
                         binding.registerEmailInput.text.toString(),
@@ -164,9 +162,6 @@ class RegisterFragment : BaseLaunchFragment() {
                                     lifecycleScope.launch(Dispatchers.Main) {
                                         Toast.makeText(activityLaunch, error, Toast.LENGTH_SHORT)
                                             .show()
-                                        binding.registerCreateButton.isClickable = true
-                                        launchVM.activityBinding?.launcherArrowBack?.isClickable =
-                                            true
                                         registerOnce.set(false)
                                     }
                                 }
@@ -181,12 +176,14 @@ class RegisterFragment : BaseLaunchFragment() {
                                     activityLaunch,
                                     binding
                                 )
-                                binding.registerCreateButton.isClickable = true
-                                launchVM.activityBinding?.launcherArrowBack?.isClickable = true
                                 registerOnce.set(false)
                             }
                         }
                     )
+                }
+                lifecycleScope.launch {
+                    delay(1500)
+                    registerOnce.set(false)
                 }
             }
         })

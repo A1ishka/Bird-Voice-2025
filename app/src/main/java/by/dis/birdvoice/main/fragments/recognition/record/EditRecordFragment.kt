@@ -161,6 +161,7 @@ class EditRecordFragment : BaseMainFragment() {
         }
 
         setUpSaveButton()
+        resetButtonAfterNetworkError()
 
         binding.editRecConcaveTimeValue.text = helpFunctions.getCurrentTime()
         binding.editRecConcaveDateValue.text = helpFunctions.getCurrentDate()
@@ -232,5 +233,11 @@ class EditRecordFragment : BaseMainFragment() {
             ContextCompat.getString(activityMain, R.string.file_saved),
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun resetButtonAfterNetworkError() {
+        Thread.sleep(700)
+        setClickOnce.compareAndSet(true, false)
+        startClickOnce.compareAndSet(true, false)
     }
 }
