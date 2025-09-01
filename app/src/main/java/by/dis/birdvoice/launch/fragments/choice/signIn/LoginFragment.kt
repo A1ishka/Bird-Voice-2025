@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -15,6 +14,7 @@ import by.dis.birdvoice.R
 import by.dis.birdvoice.client.loginization.LoginClient
 import by.dis.birdvoice.client.loginization.RegistrationClient
 import by.dis.birdvoice.databinding.FragmentLoginBinding
+import by.dis.birdvoice.helpers.utils.CustomToast
 import by.dis.birdvoice.helpers.utils.FIREBASE_CLIENT_ID
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.launch.fragments.BaseLaunchFragment
@@ -49,19 +49,14 @@ class LoginFragment : BaseLaunchFragment() {
 
                         createUserInCommonDB(account)
                     } catch (e: ApiException) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Google sign in failed: ${e.localizedMessage}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                     }
                 } else {
                     Log.d(
                         "GoogleSignIn",
                         "Result code: ${result.resultCode}, Intent: ${result.data}"
                     )
-                    Toast.makeText(requireContext(), "Google sign-in cancelled", Toast.LENGTH_SHORT)
-                        .show()
+                    CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                 }
             }
 
@@ -221,8 +216,7 @@ class LoginFragment : BaseLaunchFragment() {
                         accountId = accountId ?: 0
                     )
                 } else {
-                    Toast.makeText(requireContext(), "Authentication Failed", Toast.LENGTH_SHORT)
-                        .show()
+                    CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                 }
             }
     }

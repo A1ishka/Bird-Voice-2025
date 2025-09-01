@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
@@ -16,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import by.dis.birdvoice.R
 import by.dis.birdvoice.databinding.FragmentEditRecordBinding
+import by.dis.birdvoice.helpers.utils.CustomToast
 import by.dis.birdvoice.helpers.utils.DialogCommonInitiator
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.main.fragments.BaseMainFragment
@@ -221,18 +221,10 @@ class EditRecordFragment : BaseMainFragment() {
                 stream?.copyTo(outputStream)
 
                 stream?.close().apply {
-                    showFileSavedToast()
+                    CustomToast.show(activityMain, ContextCompat.getString(activityMain, R.string.file_saved))
                 }
             }
         }
-    }
-
-    private fun showFileSavedToast() {
-        Toast.makeText(
-            activityMain,
-            ContextCompat.getString(activityMain, R.string.file_saved),
-            Toast.LENGTH_SHORT
-        ).show()
     }
 
     private fun resetButtonAfterNetworkError() {

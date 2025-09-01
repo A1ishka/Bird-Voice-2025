@@ -9,13 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.dis.birdvoice.R
 import by.dis.birdvoice.client.recognition.RecognitionClient
 import by.dis.birdvoice.databinding.FragmentRecognition1Binding
+import by.dis.birdvoice.helpers.utils.CustomToast
 import by.dis.birdvoice.helpers.utils.DialogCommonInitiator
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.main.fragments.BaseMainFragment
@@ -120,8 +120,7 @@ class Recognition1Fragment : BaseMainFragment() {
 
     private fun recognizeAudio() {
         if (!isNetworkAvailable()) {
-            Toast.makeText(requireContext(), R.string.internet_connection_issue, Toast.LENGTH_SHORT)
-                .show()
+            CustomToast.show(requireContext(), getString(R.string.internet_connection_issue))
             goBackSafe()
             return
         }
@@ -134,10 +133,7 @@ class Recognition1Fragment : BaseMainFragment() {
                     val uri = mainVM.getUri()
                     val inputStream = uri?.let { activityMain.contentResolver.openInputStream(it) }
                     if (inputStream == null) {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.no_audio_selected), Toast.LENGTH_SHORT
-                        ).show()
+                        CustomToast.show(requireContext(), getString(R.string.no_audio_selected))
                         goBackSafe()
                         return@launch
                     }
@@ -152,11 +148,7 @@ class Recognition1Fragment : BaseMainFragment() {
                     }
                 } else {
                     mainVM.getAudioFile() ?: run {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.no_audio_selected),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        CustomToast.show(requireContext(), getString(R.string.no_audio_selected))
                         goBackSafe()
                         return@launch
                     }
@@ -178,27 +170,19 @@ class Recognition1Fragment : BaseMainFragment() {
                         when {
                             msg.equals("Birds were not recognized", ignoreCase = true) -> {
                                 mainVM.clearResults()
-                                Toast.makeText(
-                                    requireContext(),
-                                    R.string.no_birds_found,
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                CustomToast.show(requireContext(), getString(R.string.no_birds_found))
                                 navigateAction()
                             }
 
                             msg.contains("unable to resolve", true) ||
                                     msg.contains("connect", true) ||
                                     msg.contains("timeout", true) -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    R.string.internet_connection_issue,
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                CustomToast.show(requireContext(), getString(R.string.internet_connection_issue))
                                 goBackSafe()
                             }
 
                             else -> {
-                                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                                CustomToast.show(requireContext(), msg)
                                 goBackSafe()
                             }
                         }
@@ -206,7 +190,7 @@ class Recognition1Fragment : BaseMainFragment() {
                     }
                 )
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message ?: "Error", Toast.LENGTH_SHORT).show()
+                CustomToast.show(requireContext(), e.message ?: "Error")
                 tempFile?.delete()
                 goBackSafe()
             }

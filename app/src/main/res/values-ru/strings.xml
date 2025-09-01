@@ -30,6 +30,7 @@
     <string name="password_symbol_error">Пароль должен содержать хотя бы один \nспециальный символ</string>
     <string name="please_enter_the_code">Пожалуйста, введите код</string>
     <string name="space_is_not_allowed">Пробел здесь недопустим</string>
+    <string name="google_sign_in_cancelled">Вход через Google не был выполнен</string>
 
     <string name="internet_connection_issue">Проверьте соединение с интернетом</string>
     <string name="no_internet_connection">Интернет соединение отсутствует</string>
