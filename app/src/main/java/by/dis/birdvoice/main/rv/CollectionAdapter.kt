@@ -2,11 +2,11 @@ package by.dis.birdvoice.main.rv
 
 import android.app.Dialog
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import by.dis.birdvoice.databinding.CollectionDialogBinding
 import by.dis.birdvoice.databinding.CollectionRvItemBinding
@@ -26,18 +26,20 @@ class CollectionAdapter(
     private val list: ArrayList<CollectionBird>,
     private val scope: CoroutineScope,
     private val mainVM: MainVM
-): RecyclerView.Adapter<CollectionAdapter.CollectionHolder>() {
+) : RecyclerView.Adapter<CollectionAdapter.CollectionHolder>() {
 
-    inner class CollectionHolder(val binding: CollectionRvItemBinding): RecyclerView.ViewHolder(binding.root)
+    inner class CollectionHolder(val binding: CollectionRvItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CollectionHolder {
-        val binding = CollectionRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            CollectionRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CollectionHolder(binding)
     }
 
     override fun getItemCount() = list.size
 
-    override fun onBindViewHolder(holder: CollectionAdapter.CollectionHolder, position: Int) {
+    override fun onBindViewHolder(holder: CollectionHolder, position: Int) {
         holder.binding.apply {
             collectionRvItemTitle.text = list[position].name
             collectionRvItemImage.load(list[position].image) {
@@ -45,13 +47,18 @@ class CollectionAdapter(
                 transformations(RoundedCornersTransformation(16f))
             }
 
-            collectionRvItemDelete.setOnClickListener { initDeletionDialog(list[position], position) }
+            collectionRvItemDelete.setOnClickListener {
+                initDeletionDialog(
+                    list[position],
+                    position
+                )
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int = position + 1
 
-    private fun initDeletionDialog(item: CollectionBird, position: Int){
+    private fun initDeletionDialog(item: CollectionBird, position: Int) {
         val dialog = Dialog(activity)
         val dialogBinding = CollectionDialogBinding.inflate(LayoutInflater.from(activity))
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -60,9 +67,10 @@ class CollectionAdapter(
 
         val layoutParams = WindowManager.LayoutParams()
         layoutParams.copyFrom(dialog.window!!.attributes)
-        layoutParams.width = activity.resources.displayMetrics.widthPixels - (activity.resources.displayMetrics.widthPixels / 10)
+        layoutParams.width =
+            activity.resources.displayMetrics.widthPixels - (activity.resources.displayMetrics.widthPixels / 10)
         dialog.window?.attributes = layoutParams
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
 
         var arrayOfViews1: ArrayList<ViewObject>
         var arrayOfViews2: ArrayList<ViewObject>

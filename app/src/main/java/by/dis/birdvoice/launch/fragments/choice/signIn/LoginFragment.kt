@@ -26,6 +26,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
+@Suppress("DEPRECATION")
 class LoginFragment : BaseLaunchFragment() {
 
     private lateinit var binding: FragmentLoginBinding
@@ -48,7 +49,7 @@ class LoginFragment : BaseLaunchFragment() {
                         firebaseAuthWithGoogle(account.idToken!!)
 
                         createUserInCommonDB(account)
-                    } catch (e: ApiException) {
+                    } catch (_: ApiException) {
                         CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
                     }
                 } else {
@@ -205,7 +206,7 @@ class LoginFragment : BaseLaunchFragment() {
 
                     val accountId = try {
                         user?.uid?.toInt()
-                    } catch (e: NumberFormatException) {
+                    } catch (_: NumberFormatException) {
                         Log.d("NumberFormatException", "NumberFormatException")
                     }
 
@@ -226,7 +227,7 @@ class LoginFragment : BaseLaunchFragment() {
         var password = "123456789AA"
         try {
             password = (account.idToken?.takeLast(8) + account.photoUrl?.userInfo.toString()
-                .takeLast(8) + account.familyName?.takeLast(8)) ?: email.substringBefore("@")
+                .takeLast(8) + account.familyName?.takeLast(8))
         } catch (e: Exception) {
             Log.d("Create user from Firebase Exception", e.message.toString())
         }

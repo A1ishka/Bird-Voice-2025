@@ -1,7 +1,6 @@
 package by.dis.birdvoice.main
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -35,6 +34,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import androidx.core.view.isVisible
+import androidx.core.view.isGone
 
 class MainActivity : BaseActivity() {
 
@@ -156,7 +157,7 @@ class MainActivity : BaseActivity() {
         launcher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 when (result.resultCode) {
-                    Activity.RESULT_OK -> {
+                    RESULT_OK -> {
                         val uri = result.data?.data
                         mainVM.setUri(uri)
                         mainVM.observableFileToken.value = true
@@ -218,7 +219,7 @@ class MainActivity : BaseActivity() {
     }
 
     fun hideBottomNav() {
-        if (bottomNav.visibility == View.VISIBLE) {
+        if (bottomNav.isVisible) {
             bottomNav.startAnimation(
                 AnimationUtils.loadAnimation(
                     mainApp.getContext(),
@@ -230,7 +231,7 @@ class MainActivity : BaseActivity() {
     }
 
     fun showBottomNav() {
-        if (bottomNav.visibility == View.GONE) {
+        if (bottomNav.isGone) {
             bottomNav.startAnimation(
                 AnimationUtils.loadAnimation(
                     mainApp.getContext(),

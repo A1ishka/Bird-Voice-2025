@@ -2,6 +2,7 @@ package by.dis.birdvoice.launch.fragments.choice.signIn
 
 import android.app.Activity
 import android.content.Intent
+import android.credentials.CredentialManager
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -33,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Suppress("DEPRECATION")
 class RegisterFragment : BaseLaunchFragment() {
 
     private val registerOnce = AtomicBoolean(false)
@@ -42,6 +44,9 @@ class RegisterFragment : BaseLaunchFragment() {
 
     private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var auth: FirebaseAuth
+    private lateinit var credentialManager: CredentialManager
+    // where to init the args (i suppose in oncreateview)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -217,7 +222,7 @@ class RegisterFragment : BaseLaunchFragment() {
 
                     val accountId = try {
                         user?.uid?.toInt()
-                    } catch (e: NumberFormatException) {
+                    } catch (_: NumberFormatException) {
                         Log.d("NumberFormatException", "NumberFormatException")
                     }
 
@@ -285,7 +290,7 @@ class RegisterFragment : BaseLaunchFragment() {
         var password = "123456789AA"
         try {
             password = (account.idToken?.takeLast(8) + account.photoUrl?.userInfo.toString()
-                .takeLast(8) + account.familyName?.takeLast(8)) ?: email.substringBefore("@")
+                .takeLast(8) + account.familyName?.takeLast(8))
         } catch (e: Exception) {
             Log.d("Create user from Firebase Exception", e.message.toString())
         }

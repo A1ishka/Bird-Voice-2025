@@ -5,11 +5,12 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import by.dis.birdvoice.R
+import androidx.core.view.isVisible
 
 class AnimationUtils {
 
     fun commonDefineObjectsVisibility(arrayOfViews: ArrayList<ViewObject>){
-        if (arrayOfViews[0].view.visibility == View.VISIBLE) for (i in arrayOfViews) i.view.visibility = View.INVISIBLE
+        if (arrayOfViews[0].view.isVisible) for (i in arrayOfViews) i.view.visibility = View.INVISIBLE
         else for (i in arrayOfViews) i.view.visibility = View.VISIBLE
     }
 
