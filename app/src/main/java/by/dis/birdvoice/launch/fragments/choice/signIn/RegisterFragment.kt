@@ -1,17 +1,19 @@
 package by.dis.birdvoice.launch.fragments.choice.signIn
 
-import android.app.Activity
-import android.content.Intent
-import android.credentials.CredentialManager
+import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import by.dis.birdvoice.R
 import by.dis.birdvoice.client.loginization.LoginClient
@@ -21,11 +23,8 @@ import by.dis.birdvoice.helpers.utils.CustomToast
 import by.dis.birdvoice.helpers.utils.FIREBASE_CLIENT_ID
 import by.dis.birdvoice.helpers.utils.ViewObject
 import by.dis.birdvoice.launch.fragments.BaseLaunchFragment
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +33,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 
-@Suppress("DEPRECATION")
 class RegisterFragment : BaseLaunchFragment() {
 
     private val registerOnce = AtomicBoolean(false)
@@ -42,45 +40,23 @@ class RegisterFragment : BaseLaunchFragment() {
     private lateinit var binding: FragmentRegisterBinding
     override lateinit var arrayOfViews: ArrayList<ViewObject>
 
-    private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
-    private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var auth: FirebaseAuth
     private lateinit var credentialManager: CredentialManager
-    // where to init the args (i suppose in oncreateview)
+    private lateinit var googleIdOption: GetGoogleIdOption
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        googleSignInLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    try {
-                        val account = task.getResult(ApiException::class.java)!!
-                        firebaseAuthWithGoogle(account.idToken!!)
-                        createUserInCommonDB(account)
-                    } catch (e: ApiException) {
-                        CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
-                    }
-                } else {
-                    Log.d(
-                        "GoogleSignIn",
-                        "Result code: ${result.resultCode}, Intent: ${result.data}"
-                    )
-                    CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
-                }
-            }
+        binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(FIREBASE_CLIENT_ID)
-            .requestEmail()
+        credentialManager = CredentialManager.create(requireContext())
+        googleIdOption = GetGoogleIdOption.Builder()
+            .setServerClientId(FIREBASE_CLIENT_ID)
+            .setFilterByAuthorizedAccounts(false)
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-
-        binding = FragmentRegisterBinding.inflate(layoutInflater)
         binding.apply {
             arrayOfViews = arrayListOf(
                 ViewObject(registerBird),
@@ -104,7 +80,11 @@ class RegisterFragment : BaseLaunchFragment() {
         }
 
         animationUtils.commonDefineObjectsVisibility(arrayOfViews)
-        animationUtils.commonObjectAppear(activityLaunch.getApp().getContext(), arrayOfViews, true)
+        animationUtils.commonObjectAppear(
+            activityLaunch.getApp().getContext(),
+            arrayOfViews,
+            true
+        )
 
         launchVM.setTitle(getString(R.string.new_account))
 
@@ -112,79 +92,81 @@ class RegisterFragment : BaseLaunchFragment() {
             launchVM.showTopTitle()
             launchVM.showTop()
         }
-        binding.registerBird.animation.setAnimationListener(helpFunctions.createAnimationEndListener {
-            launchVM.setArrowAction {
-                navigationBackAction {
-                    animationUtils.commonObjectAppear(
-                        activityLaunch.getApp().getContext(),
-                        arrayOfViews
-                    )
-                    launchVM.hideTopTitle()
-                    launchVM.hideTop()
-                    errorViewOut(checkEmail = true, checkPassword = true)
+
+        binding.registerBird.animation.setAnimationListener(
+            helpFunctions.createAnimationEndListener {
+                launchVM.setArrowAction {
+                    navigationBackAction {
+                        animationUtils.commonObjectAppear(
+                            activityLaunch.getApp().getContext(),
+                            arrayOfViews
+                        )
+                        launchVM.hideTopTitle()
+                        launchVM.hideTop()
+                        errorViewOut(checkEmail = true, checkPassword = true)
+                    }
                 }
-            }
 
-            binding.registerGoogleClickable.setOnClickListener {
-                val signInIntent = googleSignInClient.signInIntent
-                signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                googleSignInLauncher.launch(signInIntent)
-            }
+                binding.registerGoogleClickable.setOnClickListener {
+                    signInWithGoogle()
+                }
 
-            binding.registerCreateButton.setOnClickListener {
-                if (!registerOnce.compareAndSet(false, true)) return@setOnClickListener
+                binding.registerCreateButton.setOnClickListener {
+                    if (!registerOnce.compareAndSet(false, true)) return@setOnClickListener
 
-                checkRegister {
-                    RegistrationClient.post(
-                        binding.registerEmailInput.text.toString(),
-                        binding.registerPasswordInput.text.toString(),
-                        {
-                            LoginClient.post(
-                                binding.registerEmailInput.text.toString(),
-                                binding.registerPasswordInput.text.toString(),
-                                once4 { access, refresh, email, id ->
-                                    lifecycleScope.launch {
-                                        withContext(Dispatchers.Main) {
-                                            animationUtils.commonObjectAppear(
-                                                activityLaunch.getApp().getContext(), arrayOfViews
-                                            )
-                                            activityLaunch.moveToMainActivity(
-                                                recognitionToken = access,
-                                                refreshToken = refresh,
-                                                email = email,
-                                                accountId = id
-                                            )
+                    checkRegister {
+                        RegistrationClient.post(
+                            binding.registerEmailInput.text.toString(),
+                            binding.registerPasswordInput.text.toString(),
+                            {
+                                LoginClient.post(
+                                    binding.registerEmailInput.text.toString(),
+                                    binding.registerPasswordInput.text.toString(),
+                                    once4 { access, refresh, email, id ->
+                                        lifecycleScope.launch {
+                                            withContext(Dispatchers.Main) {
+                                                animationUtils.commonObjectAppear(
+                                                    activityLaunch.getApp().getContext(),
+                                                    arrayOfViews
+                                                )
+                                                activityLaunch.moveToMainActivity(
+                                                    recognitionToken = access,
+                                                    refreshToken = refresh,
+                                                    email = email,
+                                                    accountId = id
+                                                )
+                                            }
+                                        }
+                                    },
+                                    once1 { error ->
+                                        lifecycleScope.launch(Dispatchers.Main) {
+                                            CustomToast.show(activityLaunch, error)
+                                            registerOnce.set(false)
                                         }
                                     }
-                                },
-                                once1 { error ->
-                                    lifecycleScope.launch(Dispatchers.Main) {
-                                        CustomToast.show(activityLaunch, error)
-                                        registerOnce.set(false)
-                                    }
-                                }
-                            )
-                        },
-                        { registrationError ->
-                            lifecycleScope.launch(Dispatchers.Main) {
-                                helpFunctions.checkLoginInput(
-                                    binding.registerEmailInput,
-                                    binding.registerEmailErrorMessage,
-                                    registrationError,
-                                    activityLaunch,
-                                    binding
                                 )
-                                registerOnce.set(false)
+                            },
+                            { registrationError ->
+                                lifecycleScope.launch(Dispatchers.Main) {
+                                    helpFunctions.checkLoginInput(
+                                        binding.registerEmailInput,
+                                        binding.registerEmailErrorMessage,
+                                        registrationError,
+                                        activityLaunch,
+                                        binding
+                                    )
+                                    registerOnce.set(false)
+                                }
                             }
-                        }
-                    )
-                }
-                lifecycleScope.launch {
-                    delay(1500)
-                    registerOnce.set(false)
+                        )
+                    }
+                    lifecycleScope.launch {
+                        delay(1500)
+                        registerOnce.set(false)
+                    }
                 }
             }
-        })
+        )
 
         helpFunctions.controlPopBack(launchVM, true)
         binding.registerShowPasswordButton.setOnClickListener {
@@ -208,22 +190,96 @@ class RegisterFragment : BaseLaunchFragment() {
         }
 
         activityLaunch.setPopBackCallback {
-            animationUtils.commonObjectAppear(activityLaunch.getApp().getContext(), arrayOfViews)
+            animationUtils.commonObjectAppear(
+                activityLaunch.getApp().getContext(),
+                arrayOfViews
+            )
             errorViewOut(checkEmail = true, checkPassword = true)
         }
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private fun signInWithGoogle() {
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val result = credentialManager.getCredential(
+                    request = request,
+                    context = requireContext()
+                )
+                handleCredentialResult(result)
+            } catch (e: GetCredentialException) {
+                Log.d("GoogleSignIn", "GetCredentialException: ${e.message}")
+                CustomToast.show(
+                    requireContext(),
+                    getString(R.string.google_sign_in_cancelled)
+                )
+            } catch (e: Exception) {
+                Log.d("GoogleSignIn", "Exception: ${e.message}")
+                CustomToast.show(
+                    requireContext(),
+                    getString(R.string.google_sign_in_cancelled)
+                )
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private fun handleCredentialResult(result: GetCredentialResponse) {
+        val credential = result.credential
+
+        when (credential) {
+            is CustomCredential -> {
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL ||
+                    credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_SIWG_CREDENTIAL
+                ) {
+                    val googleCred = GoogleIdTokenCredential.createFrom(credential.data)
+                    val idToken = googleCred.idToken
+
+                    firebaseAuthWithGoogle(idToken, googleCred)
+                } else {
+                    Log.d(
+                        "GoogleSignIn",
+                        "Unexpected custom credential type: ${credential.type}"
+                    )
+                    CustomToast.show(
+                        requireContext(),
+                        getString(R.string.google_sign_in_cancelled)
+                    )
+                }
+            }
+
+            else -> {
+                Log.d("GoogleSignIn", "Unsupported credential: $credential")
+                CustomToast.show(
+                    requireContext(),
+                    getString(R.string.google_sign_in_cancelled)
+                )
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(
+        idToken: String,
+        googleCred: GoogleIdTokenCredential
+    ) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
+
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
+
                 if (task.isSuccessful) {
                     val user = FirebaseAuth.getInstance().currentUser
+                    createUserInCommonDB(googleCred)
 
                     val accountId = try {
                         user?.uid?.toInt()
                     } catch (_: NumberFormatException) {
                         Log.d("NumberFormatException", "NumberFormatException")
+                        null
                     }
 
                     activityLaunch.moveToMainActivity(
@@ -233,7 +289,14 @@ class RegisterFragment : BaseLaunchFragment() {
                         accountId = accountId ?: 0
                     )
                 } else {
-                    CustomToast.show(requireContext(), getString(R.string.google_sign_in_cancelled))
+                    Log.d(
+                        "FirebaseAuthWithGoogle",
+                        "exception: ${task.exception?.message}"
+                    )
+                    CustomToast.show(
+                        requireContext(),
+                        getString(R.string.google_sign_in_cancelled)
+                    )
                 }
             }
     }
@@ -265,32 +328,38 @@ class RegisterFragment : BaseLaunchFragment() {
     }
 
     private fun setEditTextListeners() {
-        binding.registerEmailInput.addTextChangedListener(helpFunctions.createEditTextListener({
-            errorViewOut(checkEmail = true)
-            binding.registerEmailInput.setTextColor(
-                ContextCompat.getColor(
-                    activityLaunch,
-                    R.color.primary_blue
+        binding.registerEmailInput.addTextChangedListener(
+            helpFunctions.createEditTextListener(onTextChangedFun = {
+                errorViewOut(checkEmail = true)
+                binding.registerEmailInput.setTextColor(
+                    ContextCompat.getColor(
+                        activityLaunch,
+                        R.color.primary_blue
+                    )
                 )
-            )
-        }, {}))
-        binding.registerPasswordInput.addTextChangedListener(helpFunctions.createEditTextListener({
-            errorViewOut(checkPassword = true)
-            binding.registerPasswordInput.setTextColor(
-                ContextCompat.getColor(
-                    activityLaunch,
-                    R.color.primary_blue
+            }, afterTextChangedFun = {})
+        )
+        binding.registerPasswordInput.addTextChangedListener(
+            helpFunctions.createEditTextListener(onTextChangedFun = {
+                errorViewOut(checkPassword = true)
+                binding.registerPasswordInput.setTextColor(
+                    ContextCompat.getColor(
+                        activityLaunch,
+                        R.color.primary_blue
+                    )
                 )
-            )
-        }, {}))
+            }, afterTextChangedFun = {})
+        )
     }
 
-    private fun createUserInCommonDB(account: GoogleSignInAccount) {
-        val email = account.email ?: " @ "
+    private fun createUserInCommonDB(googleCred: GoogleIdTokenCredential) {
+        val email = googleCred.id
         var password = "123456789AA"
         try {
-            password = (account.idToken?.takeLast(8) + account.photoUrl?.userInfo.toString()
-                .takeLast(8) + account.familyName?.takeLast(8))
+            password =
+                googleCred.idToken.takeLast(8) +
+                        (googleCred.profilePictureUri?.toString()?.takeLast(8) ?: "") +
+                        (googleCred.familyName?.takeLast(8) ?: "")
         } catch (e: Exception) {
             Log.d("Create user from Firebase Exception", e.message.toString())
         }
@@ -299,7 +368,8 @@ class RegisterFragment : BaseLaunchFragment() {
             RegistrationClient.post(email, password, {}, {})
         } catch (e: Exception) {
             Log.d(
-                "Google account not added in DB", e.localizedMessage?.toString() ?: ""
+                "Google account not added in DB",
+                e.localizedMessage?.toString() ?: ""
             )
         }
     }
