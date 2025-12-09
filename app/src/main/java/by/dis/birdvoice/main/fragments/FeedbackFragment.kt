@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import by.dis.birdvoice.R
 import by.dis.birdvoice.databinding.FragmentFeedbackBinding
 import by.dis.birdvoice.helpers.utils.ViewObject
+import androidx.core.view.isInvisible
 
 class FeedbackFragment: BaseMainFragment() {
 
@@ -89,7 +90,7 @@ class FeedbackFragment: BaseMainFragment() {
         binding.feedbackSendButton.setOnClickListener {
             checkInput()
 
-            if (binding.feedbackErrorMessage.visibility == View.INVISIBLE) {
+            if (binding.feedbackErrorMessage.isInvisible) {
                 helpFunctions.hideKeyboard(view, activityMain.getApp().getContext())
 
                 animationUtils.commonObjectAppear(activityMain.getApp().getContext(), toHideArray)

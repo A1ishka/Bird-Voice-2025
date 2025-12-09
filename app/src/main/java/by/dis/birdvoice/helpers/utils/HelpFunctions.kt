@@ -27,6 +27,7 @@ import by.dis.birdvoice.launch.vm.LaunchVM
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.core.view.isVisible
 
 class HelpFunctions(private val mainApp: MainApp) {
 
@@ -61,7 +62,7 @@ class HelpFunctions(private val mainApp: MainApp) {
     fun checkErrorViewAvailability(errorView: TextView) {
         val errorAlphaOut =
             AnimationUtils.loadAnimation(mainApp.getContext(), R.anim.common_alpha_out)
-        if (errorView.visibility == View.VISIBLE) {
+        if (errorView.isVisible) {
             errorView.startAnimation(errorAlphaOut)
             errorView.visibility = View.INVISIBLE
         }

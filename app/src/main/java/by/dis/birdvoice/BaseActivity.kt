@@ -7,7 +7,6 @@ import androidx.lifecycle.lifecycleScope
 import by.dis.birdvoice.app.MainApp
 import by.dis.birdvoice.helpers.wrapInLocale
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -17,7 +16,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         val app = newBase.applicationContext as MainApp
-        val locale = app.localeFlow.value ?: Locale.getDefault()
+        val locale = app.localeFlow.value
         app.setLocaleInt(locale.language)
 
         val context = newBase.wrapInLocale(locale)
